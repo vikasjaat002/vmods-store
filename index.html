@@ -3,29 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>V-ModS Store | Auto Update</title>
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>V-ModS Store | Premium Apps</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Orbitron:wght@700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Orbitron:wght@500;700;900&display=swap');
         
         :root {
             --gold: #ffcf40;
-            --vip: #9d00ff;
+            --gold-dark: #b8860b;
             --blue: #007aff;
+            --green: #34c759;
+            --red: #ff3b30;
+            --purple: #af52de;
             --bg: #000;
-            --card: #0d0d0d;
-            --border: #1a1a1a;
-            --text-main: #ffffff;
-            --text-dim: #98989d;
-            --glass: rgba(255,255,255,0.05);
+            --card-bg: rgba(20, 20, 20, 0.95);
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text: #ffffff;
+            --text-secondary: #98989d;
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
         }
-        
+
         * {
-            -webkit-tap-highlight-color: transparent;
-            outline: none;
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         html, body {
@@ -35,113 +43,43 @@
             overflow: hidden;
             touch-action: none;
         }
-        
+
         body {
-            background: var(--bg);
-            color: var(--text-main);
-            font-family: 'Inter', -apple-system, sans-serif;
-            margin: 0;
+            background: #000;
+            color: var(--text);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             display: flex;
             flex-direction: column;
             user-select: none;
             -webkit-user-select: none;
             -webkit-font-smoothing: antialiased;
-            line-height: 1.4;
+            letter-spacing: -0.02em;
         }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 0; }
         
+        /* ===== ANIMATED BG ===== */
+        .bg-gradient {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(ellipse at 20% 50%, rgba(255,207,64,0.06) 0%, transparent 50%),
+                        radial-gradient(ellipse at 80% 20%, rgba(0,122,255,0.05) 0%, transparent 50%),
+                        radial-gradient(ellipse at 50% 80%, rgba(175,82,222,0.04) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ===== MAIN CONTAINER ===== */
         #main-container {
             flex: 1;
             overflow-y: auto;
             overflow-x: hidden;
             -webkit-overflow-scrolling: touch;
             touch-action: pan-y;
-        }
-        
-        /* ===== CLICK EFFECTS ===== */
-        .clickable {
-            cursor: pointer;
-            transition: all 0.15s cubic-bezier(0.25, 0.1, 0.25, 1);
             position: relative;
-        }
-        .clickable:active {
-            transform: scale(0.94);
-            opacity: 0.85;
-            transition: all 0.05s ease !important;
-        }
-        
-        /* Ripple */
-        .ripple-effect {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.3);
-            transform: scale(0);
-            animation: ripple 0.6s linear;
-            pointer-events: none;
-        }
-        @keyframes ripple {
-            to { transform: scale(4); opacity: 0; }
-        }
-
-        /* ===== GLASS EFFECTS ===== */
-        .glass {
-            background: rgba(255,255,255,0.03);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255,255,255,0.08);
-        }
-
-        /* ===== UPDATE NOTIFICATION ===== */
-        #update-notification {
-            position: fixed;
-            top: -100px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: linear-gradient(135deg, #1a1a1a, #0d0d0d);
-            border: 2px solid var(--gold);
-            border-radius: 20px;
-            padding: 18px 22px;
-            z-index: 50000;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            box-shadow: 0 10px 40px rgba(255,207,64,0.3);
-            transition: top 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            width: 90%;
-            max-width: 380px;
-        }
-        #update-notification.show { top: 20px; }
-        #update-notification .update-icon {
-            font-size: 30px;
-            animation: bounce 0.6s infinite alternate;
-        }
-        @keyframes bounce {
-            from { transform: translateY(0); }
-            to { transform: translateY(-8px); }
-        }
-        #update-notification .update-info { flex: 1; }
-        #update-notification .update-info h4 {
-            margin: 0;
-            font-family: 'Orbitron';
-            font-size: 12px;
-            color: var(--gold);
-            letter-spacing: 1px;
-        }
-        #update-notification .update-info p {
-            margin: 2px 0 0;
-            font-size: 11px;
-            color: #aaa;
-        }
-        #update-notification .update-btn {
-            padding: 10px 18px;
-            background: var(--gold);
-            border: none;
-            border-radius: 12px;
-            font-weight: 800;
-            font-family: 'Orbitron';
-            font-size: 10px;
-            color: #000;
-            cursor: pointer;
-            letter-spacing: 1px;
+            z-index: 1;
+            padding-bottom: 80px;
         }
 
         /* ===== AUTH SCREEN ===== */
@@ -153,367 +91,736 @@
             align-items: center;
             justify-content: center;
             padding: 25px;
-            background: radial-gradient(ellipse at center, #0a0a0a 0%, #000 70%);
+            background: #000;
         }
         .auth-card {
             width: 100%;
-            max-width: 360px;
-            background: var(--card);
-            border: 1px solid #222;
-            padding: 40px 25px;
+            max-width: 380px;
+            background: rgba(20, 20, 20, 0.98);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 40px 28px;
             border-radius: 28px;
             text-align: center;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
         }
-        input {
+        .auth-logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 32px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #ffcf40, #ff8c00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+        .auth-subtitle {
+            color: #666;
+            font-size: 12px;
+            margin-bottom: 30px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        .input-field {
             width: 100%;
-            padding: 16px;
-            background: #111;
-            border: 1px solid #333;
+            padding: 15px 18px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             color: #fff;
             border-radius: 14px;
-            margin-bottom: 14px;
-            text-align: center;
-            font-size: 14px;
+            margin-bottom: 12px;
+            font-size: 15px;
             font-weight: 500;
+            text-align: center;
             transition: all 0.3s;
+            outline: none;
+            font-family: 'Inter', sans-serif;
         }
-        input:focus {
-            border-color: rgba(255,207,64,0.5);
-            box-shadow: 0 0 0 3px rgba(255,207,64,0.08);
+        .input-field:focus {
+            border-color: rgba(255, 207, 64, 0.5);
+            box-shadow: 0 0 0 4px rgba(255, 207, 64, 0.08);
         }
-        .btn {
+        .input-field::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+        .btn-primary {
             width: 100%;
-            padding: 16px;
-            background: linear-gradient(135deg, #ffcf40, #ffb800);
+            padding: 15px;
+            background: linear-gradient(135deg, #ffcf40, #ff8c00);
             border: none;
             border-radius: 14px;
-            font-weight: 800;
-            font-family: 'Orbitron';
+            font-weight: 700;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
             color: #000;
-            letter-spacing: 1.5px;
-            font-size: 13px;
             cursor: pointer;
-            box-shadow: 0 8px 30px rgba(255,207,64,0.3);
-            transition: all 0.2s;
-            position: relative;
-            overflow: hidden;
+            letter-spacing: 0.5px;
+            box-shadow: 0 8px 25px rgba(255, 207, 64, 0.3);
+            transition: all 0.2s ease;
         }
-        .btn:active {
-            transform: scale(0.95);
-            box-shadow: 0 4px 15px rgba(255,207,64,0.2);
+        .btn-primary:active {
+            transform: scale(0.96);
+            opacity: 0.9;
         }
+        .auth-toggle {
+            font-size: 12px;
+            color: #555;
+            margin-top: 20px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .auth-toggle:hover { color: #888; }
 
         /* ===== HEADER ===== */
-        .header-container {
+        .header {
+            padding: 16px 20px 12px;
+            position: sticky;
+            top: 0;
             background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            z-index: 1000;
-            border-bottom: 1px solid rgba(255,255,255,0.06);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            z-index: 100;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
         }
-        .top-nav {
-            padding: 14px 18px;
+        .header-top {
             display: flex;
             align-items: center;
             justify-content: space-between;
+            margin-bottom: 12px;
         }
-        .top-nav i {
+        .header-logo {
+            font-family: 'Orbitron', sans-serif;
             font-size: 18px;
-            opacity: 0.8;
+            font-weight: 900;
+            letter-spacing: 1px;
         }
-        .search-wrap {
-            padding: 0 15px 10px;
-        }
-        .search-wrap input {
-            width: 100%;
-            padding: 14px 18px;
-            background: #111;
-            border: 1px solid #222;
-            border-radius: 16px;
-            color: #fff;
-            font-size: 13px;
-            text-align: left;
-            margin-bottom: 0;
-        }
-
-        /* ===== CATEGORIES ===== */
-        .cat-scroll {
+        .header-logo .v { color: #ffcf40; }
+        .header-logo .mods { color: #fff; }
+        .header-icons {
             display: flex;
-            overflow-x: auto;
-            gap: 8px;
-            padding: 12px 15px;
-            white-space: nowrap;
-            scrollbar-width: none;
+            gap: 18px;
+            align-items: center;
         }
-        .cat-scroll::-webkit-scrollbar { display: none; }
-        .cat-btn {
-            background: #111;
-            border: 1px solid #222;
-            padding: 10px 22px;
-            border-radius: 22px;
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text-dim);
-            transition: all 0.25s;
+        .header-icons i {
+            font-size: 18px;
+            color: #fff;
+            opacity: 0.8;
+            cursor: pointer;
+            transition: all 0.2s;
         }
-        .cat-btn.active {
-            background: var(--gold);
-            color: #000;
-            border-color: var(--gold);
-            font-weight: 700;
-            box-shadow: 0 4px 20px rgba(255,207,64,0.3);
+        .header-icons i:active { opacity: 0.5; transform: scale(0.9); }
+        .badge-dot {
+            position: absolute;
+            top: -2px;
+            right: -4px;
+            width: 8px;
+            height: 8px;
+            background: #ff3b30;
+            border-radius: 50%;
+            border: 2px solid #000;
         }
 
-        /* ===== APP CARDS ===== */
+        /* Search */
+        .search-box {
+            position: relative;
+        }
+        .search-box input {
+            width: 100%;
+            padding: 14px 42px 14px 18px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #fff;
+            border-radius: 16px;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+            transition: all 0.3s;
+        }
+        .search-box input:focus {
+            border-color: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.08);
+        }
+        .search-box input::placeholder { color: rgba(255,255,255,0.3); }
+        .search-box .search-icon {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255,255,255,0.5);
+            font-size: 14px;
+        }
+
+        /* ===== FEATURED SECTION ===== */
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 20px 20px 12px;
+            color: #888;
+        }
+        .featured-scroll {
+            display: flex;
+            gap: 14px;
+            padding: 0 20px 10px;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+        }
+        .featured-card {
+            min-width: 260px;
+            height: 150px;
+            background: linear-gradient(135deg, rgba(255,207,64,0.15), rgba(255,140,0,0.1));
+            border: 1px solid rgba(255,207,64,0.2);
+            border-radius: 20px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            scroll-snap-align: start;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .featured-card:active { transform: scale(0.96); }
+        .featured-card .feat-badge {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            background: #ffcf40;
+            color: #000;
+            font-size: 9px;
+            font-weight: 800;
+            padding: 5px 12px;
+            border-radius: 20px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        .featured-card .feat-icon {
+            font-size: 36px;
+            margin-bottom: 8px;
+        }
+        .featured-card .feat-name {
+            font-weight: 700;
+            font-size: 16px;
+        }
+        .featured-card .feat-desc {
+            font-size: 11px;
+            color: #aaa;
+            margin-top: 2px;
+        }
+
+        /* ===== CATEGORIES GRID ===== */
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            padding: 0 20px 15px;
+        }
+        .cat-card {
+            aspect-ratio: 1;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .cat-card:active { transform: scale(0.93); background: rgba(255,255,255,0.08); }
+        .cat-card .cat-icon {
+            font-size: 28px;
+        }
+        .cat-card .cat-label {
+            font-size: 10px;
+            font-weight: 600;
+            color: #aaa;
+            text-align: center;
+            letter-spacing: 0.5px;
+        }
+        .cat-card.active {
+            background: rgba(255,207,64,0.1);
+            border-color: rgba(255,207,64,0.4);
+        }
+        .cat-card.active .cat-label { color: #ffcf40; }
+
+        /* ===== APP LIST ===== */
+        .app-list {
+            padding: 0 20px;
+        }
         .app-card {
-            background: rgba(255,255,255,0.03);
+            background: rgba(255,255,255,0.04);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border-radius: 20px;
-            padding: 16px;
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 18px;
+            padding: 15px;
             display: flex;
             align-items: center;
-            margin-bottom: 12px;
-            border: 1px solid rgba(255,255,255,0.06);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-            transition: all 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
+            gap: 14px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.25, 0.1, 0.25, 1);
             position: relative;
             overflow: hidden;
         }
         .app-card:active {
-            transform: scale(0.96);
-            background: rgba(255,255,255,0.06);
+            transform: scale(0.97);
+            background: rgba(255,255,255,0.07);
             border-color: rgba(255,255,255,0.15);
-            transition: all 0.05s ease !important;
         }
-        .app-card img {
-            width: 60px;
-            height: 60px;
-            border-radius: 16px;
-            margin-right: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        .app-card.vip-card {
+            border: 1px solid rgba(255,207,64,0.3);
+            background: rgba(255,207,64,0.05);
         }
-        .app-info h3 {
-            margin: 0 0 3px;
-            font-size: 15px;
+        .app-icon {
+            width: 54px;
+            height: 54px;
+            border-radius: 14px;
+            object-fit: cover;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+        }
+        .app-info { flex: 1; min-width: 0; }
+        .app-info .app-name {
             font-weight: 700;
+            font-size: 14px;
+            margin-bottom: 2px;
         }
-        .app-info small {
-            color: var(--text-dim);
+        .app-info .app-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
             font-size: 11px;
-            font-weight: 500;
+            color: var(--text-secondary);
         }
-        .get-btn {
-            margin-left: auto;
-            background: var(--blue);
+        .star-rating {
+            color: #ffcf40;
+            font-size: 10px;
+            letter-spacing: 1px;
+        }
+        .download-btn {
+            background: #007aff;
             border: none;
             color: #fff;
-            padding: 10px 24px;
+            padding: 10px 20px;
             border-radius: 20px;
             font-weight: 700;
             font-size: 11px;
+            cursor: pointer;
             letter-spacing: 0.5px;
-            box-shadow: 0 4px 15px rgba(0,122,255,0.3);
+            transition: all 0.2s;
+            white-space: nowrap;
         }
+        .download-btn:active {
+            transform: scale(0.9);
+            opacity: 0.8;
+        }
+        .download-btn.vip-btn {
+            background: linear-gradient(135deg, #ffcf40, #ff8c00);
+            color: #000;
+        }
+
+        /* ===== BOTTOM NAV ===== */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(10,10,10,0.95);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border-top: 1px solid rgba(255,255,255,0.06);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0 20px;
+            z-index: 200;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .nav-item i { font-size: 20px; color: #666; transition: all 0.2s; }
+        .nav-item span { font-size: 9px; color: #666; font-weight: 600; letter-spacing: 0.5px; }
+        .nav-item.active i, .nav-item.active span { color: #ffcf40; }
+        .nav-item:active { transform: scale(0.9); }
 
         /* ===== SIDEBAR ===== */
         #sidebar {
             position: fixed;
-            left: -300px;
+            left: -320px;
             top: 0;
-            width: 285px;
+            width: 290px;
             height: 100%;
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(35px);
-            -webkit-backdrop-filter: blur(35px);
+            background: rgba(5,5,5,0.95);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
             z-index: 10000;
             transition: left 0.35s cubic-bezier(0.25, 0.1, 0.25, 1);
             border-right: 1px solid rgba(255,255,255,0.06);
             padding: 30px 20px;
             overflow-y: auto;
-            box-shadow: 10px 0 50px rgba(0,0,0,0.5);
         }
         #sidebar.open { left: 0; }
         .sidebar-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
+            background: rgba(0,0,0,0.75);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
             z-index: 9999;
             display: none;
         }
-        .side-item {
-            padding: 15px 12px;
-            border-bottom: 1px solid rgba(255,255,255,0.04);
-            color: var(--text-dim);
-            font-size: 14px;
+        .side-profile {
             display: flex;
             align-items: center;
             gap: 14px;
-            border-radius: 14px;
-            margin-bottom: 3px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            margin-bottom: 20px;
+        }
+        .side-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ffcf40, #ff8c00);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 16px;
+            color: #000;
+        }
+        .side-user-info .side-username { font-weight: 700; font-size: 14px; }
+        .side-user-info .side-status { font-size: 10px; color: #666; }
+        .side-item {
+            padding: 14px 12px;
+            border-radius: 12px;
+            color: #999;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
             transition: all 0.2s;
             font-weight: 500;
+            margin-bottom: 2px;
         }
-        .side-item:active {
-            background: rgba(255,255,255,0.06);
-            color: #fff;
-        }
-        .side-header {
-            font-family: 'Orbitron';
-            color: var(--gold);
-            font-size: 10px;
-            margin: 20px 0 10px;
+        .side-item:active { background: rgba(255,255,255,0.06); color: #fff; }
+        .side-divider {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 9px;
+            color: #555;
             letter-spacing: 2px;
-            opacity: 0.7;
+            text-transform: uppercase;
+            padding: 16px 12px 8px;
         }
-        .hist-log {
-            font-size: 11px;
-            padding: 10px 14px;
+        .hist-item {
+            font-size: 10px;
+            padding: 8px 12px;
             background: rgba(255,255,255,0.03);
-            backdrop-filter: blur(10px);
-            color: #ccc;
-            border-radius: 12px;
-            margin-bottom: 5px;
+            border-radius: 8px;
+            margin-bottom: 4px;
+            color: #aaa;
             border-left: 2px solid rgba(255,207,64,0.4);
         }
 
         /* ===== DIALOG ===== */
-        #vipOverlay {
+        #dialog-overlay {
             position: fixed;
             inset: 0;
             background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
             z-index: 30000;
             display: none;
             align-items: center;
             justify-content: center;
+            padding: 20px;
         }
-        .vip-modal {
-            width: 85%;
-            max-width: 350px;
-            background: rgba(255,255,255,0.04);
-            backdrop-filter: blur(35px);
-            -webkit-backdrop-filter: blur(35px);
+        .dialog-card {
+            width: 90%;
+            max-width: 360px;
+            background: rgba(20,20,20,0.98);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
             border: 1px solid rgba(255,207,64,0.3);
-            border-radius: 28px;
-            padding: 35px 25px;
+            border-radius: 24px;
+            padding: 30px 24px;
             text-align: center;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+        }
+        .dialog-icon {
+            font-size: 44px;
+            margin-bottom: 14px;
+            animation: bounce 0.8s infinite alternate;
+        }
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-8px); }
+        }
+        .dialog-title {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 15px;
+            color: #ffcf40;
+            margin-bottom: 8px;
+        }
+        .dialog-msg { font-size: 12px; color: #aaa; margin-bottom: 20px; line-height: 1.5; }
+        .dialog-btn {
+            width: 100%;
+            padding: 13px;
+            background: linear-gradient(135deg, #ffcf40, #ff8c00);
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 12px;
+            color: #000;
+            cursor: pointer;
+            letter-spacing: 1px;
+        }
+        .dialog-close {
+            margin-top: 14px;
+            font-size: 11px;
+            color: #555;
+            cursor: pointer;
         }
 
-        .rgb-text {
-            animation: rgb 4s infinite linear;
-            font-family: 'Orbitron';
-            font-weight: 900;
+        /* ===== UPDATE BAR ===== */
+        #update-bar {
+            position: fixed;
+            top: -80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a1a1a;
+            border: 2px solid #ffcf40;
+            border-radius: 16px;
+            padding: 14px 18px;
+            z-index: 50000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 10px 40px rgba(255,207,64,0.3);
+            transition: top 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            width: 90%;
+            max-width: 380px;
         }
-        @keyframes rgb {
-            0% { color: #ff0000; text-shadow: 0 0 15px rgba(255,0,0,0.4); }
-            33% { color: #00ff00; text-shadow: 0 0 15px rgba(0,255,0,0.4); }
-            66% { color: #0000ff; text-shadow: 0 0 15px rgba(0,0,255,0.4); }
-            100% { color: #ff0000; text-shadow: 0 0 15px rgba(255,0,0,0.4); }
+        #update-bar.show { top: 15px; }
+        #update-bar .up-icon { font-size: 26px; }
+        #update-bar .up-info { flex: 1; }
+        #update-bar .up-info h4 { margin: 0; font-size: 11px; color: #ffcf40; font-family: 'Orbitron'; }
+        #update-bar .up-info p { margin: 2px 0 0; font-size: 10px; color: #888; }
+        #update-bar .up-btn {
+            padding: 9px 16px;
+            background: #ffcf40;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 10px;
+            color: #000;
+            cursor: pointer;
         }
 
-        ::-webkit-scrollbar { width: 3px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #1a1a1a;
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 12px;
+            font-weight: 600;
+            z-index: 99999;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid #333;
+        }
+        .toast.show { transform: translateX(-50%) translateY(0); }
+        .toast.success { border-color: #34c759; }
+        .toast.error { border-color: #ff3b30; }
 
-        .no-apps {
+        .empty-state {
             text-align: center;
-            padding: 60px 20px;
-            color: rgba(255,255,255,0.3);
+            padding: 50px 20px;
+            color: #555;
         }
-        .no-apps i { font-size: 50px; margin-bottom: 12px; opacity: 0.3; }
+        .empty-state i { font-size: 48px; margin-bottom: 12px; opacity: 0.3; }
+        .empty-state p { font-size: 13px; font-weight: 500; }
+
+        .skeleton {
+            background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.03) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 18px;
+            height: 80px;
+            margin-bottom: 10px;
+        }
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
     </style>
 </head>
-<body oncontextmenu="return false;">
+<body>
 
-    <!-- UPDATE NOTIFICATION -->
-    <div id="update-notification">
-        <span class="update-icon">🚀</span>
-        <div class="update-info">
-            <h4 id="update-version-text">New Version Available!</h4>
-            <p>Tap to update your store</p>
+    <!-- BG -->
+    <div class="bg-gradient"></div>
+
+    <!-- Update Bar -->
+    <div id="update-bar">
+        <span class="up-icon">🚀</span>
+        <div class="up-info">
+            <h4 id="up-version">New Version Available!</h4>
+            <p>Update now for new features</p>
         </div>
-        <button class="update-btn clickable" id="update-btn" onclick="performUpdate()">UPDATE</button>
+        <button class="up-btn" onclick="performUpdate()">UPDATE</button>
     </div>
 
-    <!-- DIALOG -->
-    <div id="vipOverlay">
-        <div class="vip-modal">
-            <i class="fa-solid fa-crown" style="color: var(--gold); font-size: 45px; margin-bottom: 15px; filter: drop-shadow(0 0 15px rgba(255,207,64,0.5));"></i>
-            <h2 id="dgTitle" style="color: var(--gold);">NOTICE</h2>
-            <p id="dgMsg" style="color: #bbb; font-size: 13px; margin-bottom: 25px; line-height: 1.5;"></p>
-            <button class="btn" id="dgLinkBtn" onclick="window.open(this.dataset.link, '_blank')">CHECK NOW</button>
-            <p onclick="closeDialog()" style="margin-top: 18px; color: #555; font-size: 12px; cursor: pointer; font-weight: 500;">DISMISS</p>
+    <!-- Dialog -->
+    <div id="dialog-overlay">
+        <div class="dialog-card">
+            <div class="dialog-icon">👑</div>
+            <h2 class="dialog-title" id="dgTitle">NOTICE</h2>
+            <p class="dialog-msg" id="dgMsg">Message here...</p>
+            <button class="dialog-btn" id="dgBtn" onclick="openDialogLink()">CHECK NOW</button>
+            <p class="dialog-close" onclick="closeDialog()">DISMISS</p>
         </div>
     </div>
 
-    <!-- AUTH -->
+    <!-- Auth -->
     <div id="auth-screen">
         <div class="auth-card">
-            <h1 class="rgb-text" id="auth-title" style="font-size: 28px; margin-bottom: 28px;">V-REGISTER</h1>
-            <input type="text" id="u_name" placeholder="Username">
-            <input type="password" id="u_pass" placeholder="Password">
-            <button class="btn clickable" onclick="handleAuth()">LET'S START</button>
-            <p style="font-size:12px; color:#555; margin-top:22px;" onclick="toggleAuthMode()" id="auth-toggle" class="clickable">Already have account? Login</p>
+            <div class="auth-logo">V-MODS</div>
+            <div class="auth-subtitle">Premium App Store</div>
+            <input type="text" class="input-field" id="u_name" placeholder="Username">
+            <input type="password" class="input-field" id="u_pass" placeholder="Password">
+            <button class="btn-primary" onclick="handleAuth()">GET STARTED</button>
+            <p class="auth-toggle" id="auth-toggle" onclick="toggleAuthMode()">Already have an account? Sign In</p>
         </div>
     </div>
 
-    <!-- HEADER -->
-    <div class="header-container" id="header-ui" style="display:none;">
-        <div class="top-nav">
-            <i class="fa-solid fa-bars-staggered clickable" onclick="toggleSidebar()"></i>
-            <span class="rgb-text" style="font-size: 16px;">V-MODS STORE</span>
-            <i class="fa-solid fa-circle-user clickable" onclick="toggleSidebar()" style="font-size: 22px;"></i>
+    <!-- Main App -->
+    <div id="app-ui" style="display:none;">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-top">
+                <span class="header-logo"><span class="v">V</span><span class="mods">-MODS</span></span>
+                <div class="header-icons">
+                    <i class="fa-solid fa-crown" onclick="unlockVIPPrompt()" style="position:relative;"></i>
+                    <i class="fa-solid fa-bell" onclick="toggleSidebar()" style="position:relative;"></i>
+                </div>
+            </div>
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search apps & games..." onkeyup="handleSearch()">
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            </div>
         </div>
-        <div class="search-wrap">
-            <input type="text" id="searchInput" onkeyup="filterApps()" onkeypress="saveSearch(event)" placeholder="🔍  Search apps & games...">
-        </div>
-        <div class="cat-scroll">
-            <div class="cat-btn clickable active" onclick="filterCat('All', this)">All Mods</div>
-            <div class="cat-btn clickable" onclick="filterCat('App', this)">Apps</div>
-            <div class="cat-btn clickable" onclick="filterCat('Game', this)">Games</div>
-            <div class="cat-btn clickable" onclick="filterCat('Tool', this)">Tools</div>
-            <div class="cat-btn clickable" onclick="unlockVIP(this)">👑 Premium</div>
-        </div>
-    </div>
 
-    <!-- MAIN -->
-    <div id="main-container" style="display:none;">
-        <div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
-        <div id="sidebar" class="glass">
-            <h2 class="rgb-text" style="font-size: 20px; margin-bottom: 20px;">V-MODS</h2>
-            <div class="side-item"><i class="fa-solid fa-user-circle"></i> <span id="display-user" style="font-weight:600;"></span></div>
-            
-            <div class="side-item clickable" onclick="window.open('https://wa.me/919024395877')" style="background: linear-gradient(135deg, rgba(184,134,11,0.4), rgba(255,207,64,0.2)); border-radius: 12px; color: #fff; font-weight: 700; justify-content: center; border: 1px solid rgba(255,207,64,0.2);">
-                <i class="fa-solid fa-crown"></i> BUY VIP ACCESS
+        <!-- Main Container -->
+        <div id="main-container">
+            <!-- Featured -->
+            <div class="section-title">🔥 Featured</div>
+            <div class="featured-scroll" id="featured-scroll"></div>
+
+            <!-- Categories -->
+            <div class="section-title">📂 Categories</div>
+            <div class="categories-grid">
+                <div class="cat-card active" onclick="filterByCategory('All', this)">
+                    <span class="cat-icon">🌟</span>
+                    <span class="cat-label">All</span>
+                </div>
+                <div class="cat-card" onclick="filterByCategory('Game', this)">
+                    <span class="cat-icon">🎮</span>
+                    <span class="cat-label">Games</span>
+                </div>
+                <div class="cat-card" onclick="filterByCategory('App', this)">
+                    <span class="cat-icon">📱</span>
+                    <span class="cat-label">Apps</span>
+                </div>
+                <div class="cat-card" onclick="filterByCategory('Tool', this)">
+                    <span class="cat-icon">🔧</span>
+                    <span class="cat-label">Tools</span>
+                </div>
             </div>
 
-            <div class="side-header">RECENT ACTIVITY</div>
-            <div id="download-history-box"></div>
-            <div id="search-history-box"></div>
-
-            <div class="side-header">SUPPORT</div>
-            <div class="side-item clickable" onclick="window.open('https://t.me/V_Mods_Official')">
-                <i class="fa-brands fa-telegram" style="color: #0088cc;"></i> Telegram Channel
+            <!-- App List -->
+            <div class="section-title" id="list-title">📋 All Apps</div>
+            <div class="app-list" id="app-list">
+                <div class="skeleton"></div>
+                <div class="skeleton"></div>
+                <div class="skeleton"></div>
             </div>
-            <div class="side-item clickable" onclick="window.open('https://wa.me/919024395877')">
-                <i class="fa-solid fa-headset" style="color: #25D366;"></i> Contact Admin
-            </div>
+        </div>
 
-            <div class="side-item clickable" style="color: #ff453a; margin-top: 15px;" onclick="logout()">
+        <!-- Bottom Nav -->
+        <div class="bottom-nav">
+            <div class="nav-item active" onclick="filterByCategory('All', this)">
+                <i class="fa-solid fa-house"></i>
+                <span>Home</span>
+            </div>
+            <div class="nav-item" onclick="filterByCategory('Game', this)">
+                <i class="fa-solid fa-gamepad"></i>
+                <span>Games</span>
+            </div>
+            <div class="nav-item" onclick="filterByCategory('App', this)">
+                <i class="fa-solid fa-grid-2"></i>
+                <span>Apps</span>
+            </div>
+            <div class="nav-item" onclick="unlockVIPPrompt()">
+                <i class="fa-solid fa-crown"></i>
+                <span>Premium</span>
+            </div>
+            <div class="nav-item" onclick="toggleSidebar()">
+                <i class="fa-solid fa-user"></i>
+                <span>Profile</span>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+        <div id="sidebar">
+            <div class="side-profile">
+                <div class="side-avatar" id="side-avatar">V</div>
+                <div class="side-user-info">
+                    <div class="side-username" id="display-user">User</div>
+                    <div class="side-status">● Online</div>
+                </div>
+            </div>
+            <div class="side-item" onclick="window.open('https://wa.me/919024395877')" style="background: linear-gradient(135deg, rgba(255,207,64,0.2), rgba(255,140,0,0.1)); color: #ffcf40; justify-content: center; font-weight: 700;">
+                <i class="fa-solid fa-crown"></i> Upgrade to VIP
+            </div>
+            <div class="side-divider">Recent Downloads</div>
+            <div id="download-history"></div>
+            <div class="side-divider">Recent Searches</div>
+            <div id="search-history"></div>
+            <div class="side-divider">Support</div>
+            <div class="side-item" onclick="window.open('https://t.me/V_Mods_Official')">
+                <i class="fa-brands fa-telegram"></i> Telegram Channel
+            </div>
+            <div class="side-item" onclick="window.open('https://wa.me/919024395877')">
+                <i class="fa-brands fa-whatsapp"></i> Contact Admin
+            </div>
+            <div class="side-item" onclick="logout()" style="color: #ff3b30; margin-top: 15px;">
                 <i class="fa-solid fa-right-from-bracket"></i> Logout
             </div>
         </div>
-        <div id="content-area" style="padding: 15px;"></div>
+
+        <!-- Toast -->
+        <div class="toast" id="toast"></div>
     </div>
 
 <script>
-    // ===== FIREBASE =====
+    // Firebase
     const firebaseConfig = {
         apiKey: "AIzaSyAQ1mRKgvcWjmfcAPAatfekpVdJQ1gUn1g",
         databaseURL: "https://vmodstore-ea588-default-rtdb.firebaseio.com/",
@@ -522,389 +829,224 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // ===== CLICK SOUND SYSTEM =====
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    // State
+    const STORE_VERSION = "2.0.0";
+    let isLoginMode = false, currentUser = null, allApps = [], currentCategory = 'All', isVIP = false, vipKey = '', dialogLink = '';
+
+    // Audio Context for click sounds
     let audioCtx;
-
-    function playClickSound(type = 'click') {
+    function playSound(type = 'tap') {
         try {
-            if (!audioCtx) audioCtx = new AudioContext();
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            
-            if (type === 'click') {
-                // Soft tap sound
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(800, audioCtx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(400, audioCtx.currentTime + 0.08);
-                gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
-                osc.start(audioCtx.currentTime);
-                osc.stop(audioCtx.currentTime + 0.08);
-            } else if (type === 'success') {
-                // Success chime
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(600, audioCtx.currentTime);
-                osc.frequency.setValueAtTime(900, audioCtx.currentTime + 0.1);
-                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.2);
-                osc.start(audioCtx.currentTime);
-                osc.stop(audioCtx.currentTime + 0.2);
-            } else if (type === 'error') {
-                // Error buzz
-                osc.type = 'square';
-                osc.frequency.setValueAtTime(200, audioCtx.currentTime);
-                gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
-                osc.start(audioCtx.currentTime);
-                osc.stop(audioCtx.currentTime + 0.15);
-            } else if (type === 'download') {
-                // Download whoosh
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(300, audioCtx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.15);
-                gain.gain.setValueAtTime(0.07, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
-                osc.start(audioCtx.currentTime);
-                osc.stop(audioCtx.currentTime + 0.15);
-            }
-        } catch(e) {
-            // Silent fail if audio not supported
-        }
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const o = audioCtx.createOscillator();
+            const g = audioCtx.createGain();
+            o.connect(g); g.connect(audioCtx.destination);
+            if (type === 'tap') { o.type = 'sine'; o.frequency.setValueAtTime(600, audioCtx.currentTime); o.frequency.exponentialRampToValueAtTime(300, audioCtx.currentTime + 0.06); g.gain.setValueAtTime(0.06, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.06); o.start(); o.stop(audioCtx.currentTime + 0.06); }
+            else if (type === 'success') { o.type = 'sine'; o.frequency.setValueAtTime(500, audioCtx.currentTime); o.frequency.setValueAtTime(800, audioCtx.currentTime + 0.08); o.frequency.setValueAtTime(1100, audioCtx.currentTime + 0.16); g.gain.setValueAtTime(0.08, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.2); o.start(); o.stop(audioCtx.currentTime + 0.2); }
+            else if (type === 'error') { o.type = 'square'; o.frequency.setValueAtTime(180, audioCtx.currentTime); g.gain.setValueAtTime(0.05, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.12); o.start(); o.stop(audioCtx.currentTime + 0.12); }
+        } catch(e) {}
     }
 
-    // ===== ADD CLICK SOUND TO ALL CLICKABLE ELEMENTS =====
-    document.addEventListener('click', function(e) {
-        const target = e.target.closest('.clickable, .btn, .cat-btn, .get-btn, .side-item');
-        if (target) {
-            if (target.classList.contains('get-btn') || target.closest('.get-btn')) {
-                playClickSound('download');
-            } else if (target.closest('#vipOverlay') || target.closest('.vip-modal')) {
-                playClickSound('success');
-            } else {
-                playClickSound('click');
-            }
-        }
-    });
-
-    // ===== RIPPLE EFFECT ON CLICK =====
-    document.addEventListener('click', function(e) {
-        const target = e.target.closest('.clickable, .btn, .cat-btn');
-        if (!target) return;
-        
-        const ripple = document.createElement('span');
-        ripple.className = 'ripple-effect';
-        const rect = target.getBoundingClientRect();
-        const size = Math.max(rect.width, rect.height);
-        ripple.style.width = ripple.style.height = size + 'px';
-        ripple.style.left = (e.clientX - rect.left - size/2) + 'px';
-        ripple.style.top = (e.clientY - rect.top - size/2) + 'px';
-        ripple.style.position = 'absolute';
-        target.style.position = target.style.position || 'relative';
-        target.style.overflow = 'hidden';
-        target.appendChild(ripple);
-        
-        setTimeout(() => ripple.remove(), 600);
-    });
-
-    // ===== GLOBAL VARIABLES =====
-    const CURRENT_STORE_VERSION = "1.0.0";
-    let isLoginMode = false, currentUser = null, allApps = [], selectedCat = 'All', isVIPUnlocked = false;
-    let ADMIN_VIP_KEY = "";
-    let updateData = null;
-
-    // ===== AUTO UPDATE SYSTEM =====
-    function checkForUpdate() {
-        db.ref('app_settings/store_version').on('value', snap => {
-            if (snap.exists()) {
-                const data = snap.val();
-                updateData = data;
-                if (data.force_update && data.version !== CURRENT_STORE_VERSION) {
-                    // Show update notification
-                    document.getElementById('update-version-text').innerText = `v${data.version} Available!`;
-                    document.getElementById('update-notification').classList.add('show');
-                    playClickSound('success');
-                }
-            }
-        });
+    // Toast
+    function showToast(msg, type = '') {
+        const t = document.getElementById('toast');
+        t.textContent = msg; t.className = 'toast show ' + type;
+        setTimeout(() => t.className = 'toast', 2500);
     }
 
-    function performUpdate() {
-        if (updateData && updateData.update_url) {
-            playClickSound('download');
-            if (updateData.update_url.endsWith('.apk')) {
-                window.open(updateData.update_url, '_blank');
-            } else {
-                window.location.href = updateData.update_url;
-            }
-            // Clear force flag
-            db.ref('app_settings/store_version/force_update').set(false);
-            document.getElementById('update-notification').classList.remove('show');
-        }
-    }
-
-    // Initialize update check
-    checkForUpdate();
-
-    // ===== VIP KEY & DIALOG =====
-    db.ref('app_settings/vip_key').on('value', snap => { ADMIN_VIP_KEY = snap.val() || ""; });
-    db.ref('app_settings/dialog').on('value', snap => {
+    // Update Check
+    let pendingUpdate = null;
+    db.ref('app_settings/store_version').on('value', snap => {
         if (snap.exists()) {
             const d = snap.val();
-            if (d.status === "on") {
-                document.getElementById('dgTitle').innerText = d.title || 'NOTICE';
-                document.getElementById('dgMsg').innerText = d.message || '';
-                document.getElementById('dgLinkBtn').dataset.link = d.link || '#';
-                document.getElementById('vipOverlay').style.display = 'flex';
+            if (d.force_update && d.version !== STORE_VERSION) {
+                pendingUpdate = d;
+                document.getElementById('up-version').textContent = 'v' + d.version + ' Available!';
+                document.getElementById('update-bar').classList.add('show');
+                playSound('success');
             }
         }
     });
 
-    // ===== LOAD APPS =====
+    function performUpdate() {
+        if (pendingUpdate && pendingUpdate.update_url) {
+            playSound('tap');
+            if (pendingUpdate.update_url.endsWith('.apk')) window.open(pendingUpdate.update_url, '_blank');
+            else window.location.href = pendingUpdate.update_url;
+            db.ref('app_settings/store_version/force_update').set(false);
+            document.getElementById('update-bar').classList.remove('show');
+        }
+    }
+
+    // VIP & Dialog
+    db.ref('app_settings/vip_key').on('value', s => vipKey = s.val() || '');
+    db.ref('app_settings/dialog').on('value', s => {
+        if (s.exists() && s.val().status === 'on') {
+            const d = s.val();
+            document.getElementById('dgTitle').textContent = d.title || 'NOTICE';
+            document.getElementById('dgMsg').textContent = d.message || '';
+            dialogLink = d.link || '';
+            document.getElementById('dialog-overlay').style.display = 'flex';
+        }
+    });
+
+    function closeDialog() { document.getElementById('dialog-overlay').style.display = 'none'; }
+    function openDialogLink() { if (dialogLink) window.open(dialogLink, '_blank'); closeDialog(); }
+
+    // Load Apps
     function loadApps() {
         db.ref('apps/').on('value', snap => {
             allApps = [];
-            if (snap.exists()) {
-                const data = snap.val();
-                allApps = Object.keys(data).map(key => ({ id: key, ...data[key] }));
-            }
-            renderApps(allApps);
+            if (snap.exists()) snap.forEach(c => { const a = c.val(); allApps.push({ id: c.key, ...a }); });
+            renderAll();
         });
     }
 
-    function renderApps(data) {
-        const container = document.getElementById('content-area');
-        container.innerHTML = "";
+    function renderAll() {
+        renderFeatured();
+        renderAppList();
+    }
+
+    function renderFeatured() {
+        const container = document.getElementById('featured-scroll');
+        const featured = allApps.filter(a => a.featured || a.category === 'VIP' || (a.downloads > 5));
+        if (featured.length === 0) { container.innerHTML = ''; return; }
+        container.innerHTML = featured.slice(0, 10).map(a => `
+            <div class="featured-card" onclick="trackDownload('${a.name.replace(/'/g, "\\'")}', '${a.link.replace(/'/g, "\\'")}')">
+                <span class="feat-badge">${a.category || 'HOT'}</span>
+                <span class="feat-icon">${a.category === 'Game' ? '🎮' : a.category === 'VIP' ? '👑' : a.category === 'Tool' ? '🔧' : '📱'}</span>
+                <div>
+                    <div class="feat-name">${a.name}</div>
+                    <div class="feat-desc">${a.desc || 'Download now!'}</div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function renderAppList() {
+        const container = document.getElementById('app-list');
+        let filtered = allApps;
+        if (currentCategory === 'VIP' && !isVIP) { container.innerHTML = '<div class="empty-state"><i class="fa-solid fa-lock"></i><p>Unlock VIP to see premium apps</p></div>'; return; }
+        if (currentCategory !== 'All' && currentCategory !== 'VIP') filtered = filtered.filter(a => a.category === currentCategory);
+        if (currentCategory === 'VIP') filtered = filtered.filter(a => a.category === 'VIP');
         
-        let filtered = data.filter(app => {
-            if (app.category === 'VIP' && !isVIPUnlocked) return false;
-            if (selectedCat === 'All') return true;
-            return app.category === selectedCat;
-        });
-        
-        if (filtered.length === 0) {
-            container.innerHTML = `
-                <div class="no-apps">
-                    <i class="fa-solid fa-box-open"></i>
-                    <p style="font-weight:500; font-size:14px;">No apps found</p>
-                </div>`;
-            return;
-        }
-        
-        filtered.forEach(app => {
-            const isVip = app.category === 'VIP';
-            container.innerHTML += `
-                <div class="app-card clickable" style="${isVip ? 'border: 1px solid rgba(255,207,64,0.3); box-shadow: 0 4px 20px rgba(255,207,64,0.1);' : ''}">
-                    <img src="${app.icon || 'https://cdn-icons-png.flaticon.com/512/2585/2585151.png'}" 
-                         alt="${app.name}" 
-                         onerror="this.src='https://cdn-icons-png.flaticon.com/512/2585/2585151.png'">
-                    <div class="app-info">
-                        <h3>${app.name} ${isVip ? '👑' : ''}</h3>
-                        <small>${app.category || 'App'} • v${app.version || '1.0'}</small>
+        const search = document.getElementById('searchInput')?.value?.toLowerCase() || '';
+        if (search) filtered = filtered.filter(a => a.name.toLowerCase().includes(search));
+
+        document.getElementById('list-title').textContent = currentCategory === 'All' ? '📋 All Apps' : `📋 ${currentCategory}`;
+        if (filtered.length === 0) { container.innerHTML = '<div class="empty-state"><i class="fa-solid fa-box-open"></i><p>No apps found</p></div>'; return; }
+        container.innerHTML = filtered.map(a => {
+            const isV = a.category === 'VIP';
+            return `
+            <div class="app-card ${isV ? 'vip-card' : ''}" onclick="trackDownload('${a.name.replace(/'/g, "\\'")}', '${a.link.replace(/'/g, "\\'")}')">
+                <img class="app-icon" src="${a.icon || 'https://cdn-icons-png.flaticon.com/512/2585/2585151.png'}" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2585/2585151.png'" alt="${a.name}">
+                <div class="app-info">
+                    <div class="app-name">${a.name} ${isV ? '👑' : ''}</div>
+                    <div class="app-meta">
+                        <span>${a.category || 'App'}</span>
+                        <span class="star-rating">★★★★★</span>
+                        <span>📥 ${a.downloads || 0}</span>
                     </div>
-                    <button class="get-btn clickable" onclick="event.stopPropagation(); trackDownload('${app.name.replace(/'/g, "\\'")}', '${app.link.replace(/'/g, "\\'")}')">
-                        GET
-                    </button>
-                </div>`;
-        });
+                </div>
+                <button class="download-btn ${isV ? 'vip-btn' : ''}" onclick="event.stopPropagation(); trackDownload('${a.name.replace(/'/g, "\\'")}', '${a.link.replace(/'/g, "\\'")}')">GET</button>
+            </div>`;
+        }).join('');
     }
 
-    // ===== TRACK DOWNLOAD (FIXED) =====
     function trackDownload(name, link) {
-        playClickSound('download');
-        
+        playSound('tap');
         if (currentUser) {
-            db.ref('users/' + currentUser + '/history/downloads').push({
-                app: name,
-                time: new Date().toISOString()
-            });
-            
-            // Update download count on app
+            db.ref('users/' + currentUser + '/history/downloads').push({ app: name, time: Date.now() });
             const app = allApps.find(a => a.name === name);
-            if (app && app.id) {
-                db.ref('apps/' + app.id + '/downloads').transaction(count => (count || 0) + 1);
-            }
+            if (app) db.ref('apps/' + app.id + '/downloads').transaction(c => (c || 0) + 1);
         }
-        
-        // Open download link
-        try {
-            const a = document.createElement('a');
-            a.href = link;
-            a.setAttribute('target', '_blank');
-            a.setAttribute('rel', 'noopener noreferrer');
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-        } catch(e) {
-            window.open(link, '_blank');
-        }
+        const a = document.createElement('a'); a.href = link; a.setAttribute('target', '_blank'); a.click(); a.remove();
     }
 
-    // ===== SEARCH =====
-    function saveSearch(event) {
-        if (event.key === 'Enter') {
-            const q = document.getElementById('searchInput').value.trim();
-            if (q && currentUser) {
-                db.ref('users/' + currentUser + '/history/searches').push(q);
-            }
-            playClickSound('click');
-        }
+    function handleSearch() { renderAppList(); }
+
+    function filterByCategory(cat, el) {
+        playSound('tap');
+        currentCategory = cat;
+        document.querySelectorAll('.cat-card').forEach(c => c.classList.remove('active'));
+        if (el) el.classList.add('active');
+        if (cat === 'VIP' && !isVIP) { unlockVIPPrompt(); return; }
+        renderAppList();
     }
 
-    function filterApps() {
-        const q = document.getElementById('searchInput').value.toLowerCase();
-        document.getElementById('content-area').innerHTML = '';
-        const filtered = allApps.filter(a => a.name.toLowerCase().includes(q));
-        renderApps(filtered);
+    function unlockVIPPrompt() {
+        if (isVIP) { currentCategory = 'VIP'; renderAppList(); return; }
+        const key = prompt('🔑 Enter VIP Key:');
+        if (key === vipKey && vipKey) { isVIP = true; playSound('success'); showToast('✅ Premium Unlocked!', 'success'); currentCategory = 'VIP'; renderAppList(); }
+        else if (key) { playSound('error'); showToast('❌ Invalid Key!', 'error'); }
     }
 
-    // ===== HISTORY SYNC =====
-    function syncHist() {
-        if (!currentUser) return;
-        db.ref('users/' + currentUser + '/history/downloads').limitToLast(5).on('value', s => {
-            const box = document.getElementById('download-history-box');
-            box.innerHTML = "";
-            const items = [];
-            s.forEach(c => items.push(c.val()));
-            items.reverse().forEach(item => {
-                const name = typeof item === 'string' ? item : item.app || item;
-                box.innerHTML += `<div class="hist-log">📥 ${name}</div>`;
-            });
-        });
-        db.ref('users/' + currentUser + '/history/searches').limitToLast(5).on('value', s => {
-            const box = document.getElementById('search-history-box');
-            box.innerHTML = "";
-            const items = [];
-            s.forEach(c => items.push(c.val()));
-            items.reverse().forEach(item => {
-                box.innerHTML += `<div class="hist-log">🔍 ${item}</div>`;
-            });
-        });
-    }
-
-    // ===== VIP UNLOCK =====
-    function unlockVIP(btn) {
-        playClickSound('click');
-        if (isVIPUnlocked) {
-            filterCat('VIP', btn);
-        } else {
-            let key = prompt("🔑 Enter VIP Key:");
-            if (key === ADMIN_VIP_KEY && ADMIN_VIP_KEY !== "") {
-                isVIPUnlocked = true;
-                playClickSound('success');
-                alert("✅ Premium Unlocked!");
-                filterCat('VIP', btn);
-            } else if (key !== null) {
-                playClickSound('error');
-                alert("❌ Invalid Key!");
-            }
-        }
-    }
-
-    // ===== AUTH =====
-    function toggleAuthMode() {
-        playClickSound('click');
-        isLoginMode = !isLoginMode;
-        document.getElementById('auth-title').innerText = isLoginMode ? "V-LOGIN" : "V-REGISTER";
-        document.getElementById('auth-toggle').innerText = isLoginMode ? "Need an account? Register" : "Have an account? Login";
-    }
-
+    // Auth
+    function toggleAuthMode() { isLoginMode = !isLoginMode; document.getElementById('auth-title')?.remove(); const t = document.getElementById('auth-toggle'); t.textContent = isLoginMode ? "Don't have an account? Register" : "Already have an account? Sign In"; }
+    
     function handleAuth() {
-        playClickSound('click');
         const u = document.getElementById('u_name').value.trim().toLowerCase();
         const p = document.getElementById('u_pass').value.trim();
-        if (!u || !p) {
-            playClickSound('error');
-            return;
-        }
-        db.ref('users/' + u).once('value', snap => {
+        if (!u || !p) { playSound('error'); return; }
+        playSound('tap');
+        db.ref('users/' + u).once('value', s => {
             if (isLoginMode) {
-                if (snap.exists() && snap.val().password === p) {
-                    playClickSound('success');
-                    proceed(u);
-                } else {
-                    playClickSound('error');
-                    alert("❌ Wrong credentials!");
-                }
+                if (s.exists() && s.val().password === p) { playSound('success'); proceed(u); }
+                else { playSound('error'); showToast('Wrong credentials!', 'error'); }
             } else {
-                if (snap.exists()) {
-                    playClickSound('error');
-                    alert("⚠️ Username already exists!");
-                } else {
-                    db.ref('users/' + u).set({ password: p, created: new Date().toISOString() })
-                        .then(() => {
-                            playClickSound('success');
-                            proceed(u);
-                        });
-                }
+                if (s.exists()) { playSound('error'); showToast('Username exists!', 'error'); }
+                else db.ref('users/' + u).set({ password: p }).then(() => { playSound('success'); proceed(u); });
             }
         });
     }
 
     function proceed(u) {
-        currentUser = u;
-        localStorage.setItem('v_user', u);
+        currentUser = u; localStorage.setItem('v_user', u);
         document.getElementById('auth-screen').style.display = 'none';
-        document.getElementById('main-container').style.display = 'block';
-        document.getElementById('header-ui').style.display = 'block';
-        document.getElementById('display-user').innerText = u;
-        loadApps();
-        syncHist();
+        document.getElementById('app-ui').style.display = 'block';
+        document.getElementById('display-user').textContent = u;
+        document.getElementById('side-avatar').textContent = u[0].toUpperCase();
+        loadApps(); syncHistory();
     }
 
-    // ===== FILTERS =====
-    function filterCat(c, btn) {
-        playClickSound('click');
-        selectedCat = c;
-        document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        renderApps(allApps);
+    // History
+    function syncHistory() {
+        if (!currentUser) return;
+        db.ref('users/' + currentUser + '/history/downloads').limitToLast(5).on('value', s => {
+            const box = document.getElementById('download-history'); box.innerHTML = '';
+            const items = []; s.forEach(c => items.push(c.val())); items.reverse().forEach(i => box.innerHTML += `<div class="hist-item">📥 ${typeof i === 'string' ? i : i.app || i}</div>`);
+        });
+        db.ref('users/' + currentUser + '/history/searches').limitToLast(5).on('value', s => {
+            const box = document.getElementById('search-history'); box.innerHTML = '';
+            const items = []; s.forEach(c => items.push(c.val())); items.reverse().forEach(i => box.innerHTML += `<div class="hist-item">🔍 ${i}</div>`);
+        });
     }
 
-    // ===== SIDEBAR =====
+    // Sidebar
     function toggleSidebar() {
-        playClickSound('click');
-        const s = document.getElementById('sidebar'), o = document.getElementById('overlay');
-        const isOpen = s.classList.contains('open');
-        if (isOpen) {
-            s.classList.remove('open');
-            o.style.display = 'none';
-        } else {
-            s.classList.add('open');
-            o.style.display = 'block';
-        }
+        playSound('tap');
+        const s = document.getElementById('sidebar'), o = document.getElementById('sidebar-overlay');
+        const open = s.classList.contains('open');
+        s.classList.toggle('open', !open);
+        o.style.display = open ? 'none' : 'block';
     }
 
-    document.getElementById('overlay').addEventListener('click', function() {
-        document.getElementById('sidebar').classList.remove('open');
-        this.style.display = 'none';
+    // Search save
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && document.activeElement === document.getElementById('searchInput')) {
+            const q = document.getElementById('searchInput').value.trim();
+            if (q && currentUser) db.ref('users/' + currentUser + '/history/searches').push(q);
+        }
     });
 
-    // ===== DIALOG =====
-    function closeDialog() {
-        playClickSound('click');
-        document.getElementById('vipOverlay').style.display = 'none';
-    }
+    function logout() { localStorage.removeItem('v_user'); location.reload(); }
 
-    // ===== LOGOUT =====
-    function logout() {
-        playClickSound('click');
-        localStorage.removeItem('v_user');
-        location.reload();
-    }
-
-    // ===== AUTO LOGIN =====
+    // Init
     const saved = localStorage.getItem('v_user');
     if (saved) {
-        // Verify user still exists
-        db.ref('users/' + saved).once('value', snap => {
-            if (snap.exists()) {
-                proceed(saved);
-            } else {
-                localStorage.removeItem('v_user');
-            }
+        db.ref('users/' + saved).once('value', s => {
+            if (s.exists()) proceed(saved);
+            else localStorage.removeItem('v_user');
         });
     }
 </script>
