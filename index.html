@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
-    <!-- ⚡ NO CACHE - LEVEL 1 ⚡ -->
+    <!-- ⚡ NO CACHE FIX ⚡ -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -21,18 +21,12 @@
         
         :root {
             --gold: #ffcf40;
-            --gold-dark: #b8860b;
             --blue: #007aff;
             --green: #34c759;
             --red: #ff3b30;
-            --purple: #af52de;
             --bg: #000;
-            --card-bg: rgba(20, 20, 20, 0.95);
-            --glass: rgba(255, 255, 255, 0.05);
-            --glass-border: rgba(255, 255, 255, 0.08);
             --text: #ffffff;
             --text-secondary: #98989d;
-            --shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
         }
 
         * {
@@ -64,7 +58,6 @@
 
         ::-webkit-scrollbar { width: 0; }
         
-        /* ===== ANIMATED BG ===== */
         .bg-gradient {
             position: fixed;
             inset: 0;
@@ -145,9 +138,7 @@
             border-color: rgba(255, 207, 64, 0.5);
             box-shadow: 0 0 0 4px rgba(255, 207, 64, 0.08);
         }
-        .input-field::placeholder {
-            color: rgba(255, 255, 255, 0.3);
-        }
+        .input-field::placeholder { color: rgba(255, 255, 255, 0.3); }
         .btn-primary {
             width: 100%;
             padding: 15px;
@@ -163,10 +154,7 @@
             box-shadow: 0 8px 25px rgba(255, 207, 64, 0.3);
             transition: all 0.2s ease;
         }
-        .btn-primary:active {
-            transform: scale(0.96);
-            opacity: 0.9;
-        }
+        .btn-primary:active { transform: scale(0.96); opacity: 0.9; }
         .auth-toggle {
             font-size: 12px;
             color: #555;
@@ -214,9 +202,7 @@
         }
         .header-icons i:active { opacity: 0.5; transform: scale(0.9); }
 
-        .search-box {
-            position: relative;
-        }
+        .search-box { position: relative; }
         .search-box input {
             width: 100%;
             padding: 14px 42px 14px 18px;
@@ -572,7 +558,6 @@
             cursor: pointer;
         }
 
-        /* Toast */
         .toast {
             position: fixed;
             bottom: 100px;
@@ -614,12 +599,11 @@
         }
     </style>
 </head>
-<body>
+<body oncontextmenu="return false;">
 
-    <!-- BG -->
     <div class="bg-gradient"></div>
 
-    <!-- Update Bar -->
+    <!-- UPDATE BAR -->
     <div id="update-bar">
         <span class="up-icon">🚀</span>
         <div class="up-info">
@@ -629,7 +613,7 @@
         <button class="up-btn" onclick="performUpdate()">UPDATE</button>
     </div>
 
-    <!-- Dialog -->
+    <!-- DIALOG -->
     <div id="dialog-overlay">
         <div class="dialog-card">
             <div class="dialog-icon">👑</div>
@@ -640,7 +624,7 @@
         </div>
     </div>
 
-    <!-- Auth -->
+    <!-- AUTH -->
     <div id="auth-screen">
         <div class="auth-card">
             <div class="auth-logo">V-MODS</div>
@@ -652,9 +636,8 @@
         </div>
     </div>
 
-    <!-- Main App -->
+    <!-- MAIN APP -->
     <div id="app-ui" style="display:none;">
-        <!-- Header -->
         <div class="header">
             <div class="header-top">
                 <span class="header-logo"><span class="v">V</span><span class="mods">-MODS</span></span>
@@ -672,56 +655,25 @@
         <div id="main-container">
             <div class="section-title">🔥 Featured</div>
             <div class="featured-scroll" id="featured-scroll"></div>
-
             <div class="section-title">📂 Categories</div>
             <div class="categories-grid">
-                <div class="cat-card active" onclick="filterByCategory('All', this)">
-                    <span class="cat-icon">🌟</span>
-                    <span class="cat-label">All</span>
-                </div>
-                <div class="cat-card" onclick="filterByCategory('Game', this)">
-                    <span class="cat-icon">🎮</span>
-                    <span class="cat-label">Games</span>
-                </div>
-                <div class="cat-card" onclick="filterByCategory('App', this)">
-                    <span class="cat-icon">📱</span>
-                    <span class="cat-label">Apps</span>
-                </div>
-                <div class="cat-card" onclick="filterByCategory('Tool', this)">
-                    <span class="cat-icon">🔧</span>
-                    <span class="cat-label">Tools</span>
-                </div>
+                <div class="cat-card active" onclick="filterByCategory('All', this)"><span class="cat-icon">🌟</span><span class="cat-label">All</span></div>
+                <div class="cat-card" onclick="filterByCategory('Game', this)"><span class="cat-icon">🎮</span><span class="cat-label">Games</span></div>
+                <div class="cat-card" onclick="filterByCategory('App', this)"><span class="cat-icon">📱</span><span class="cat-label">Apps</span></div>
+                <div class="cat-card" onclick="filterByCategory('Tool', this)"><span class="cat-icon">🔧</span><span class="cat-label">Tools</span></div>
             </div>
-
             <div class="section-title" id="list-title">📋 All Apps</div>
             <div class="app-list" id="app-list">
-                <div class="skeleton"></div>
-                <div class="skeleton"></div>
-                <div class="skeleton"></div>
+                <div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>
             </div>
         </div>
 
         <div class="bottom-nav">
-            <div class="nav-item active" onclick="filterByCategory('All', this)">
-                <i class="fa-solid fa-house"></i>
-                <span>Home</span>
-            </div>
-            <div class="nav-item" onclick="filterByCategory('Game', this)">
-                <i class="fa-solid fa-gamepad"></i>
-                <span>Games</span>
-            </div>
-            <div class="nav-item" onclick="filterByCategory('App', this)">
-                <i class="fa-solid fa-grid-2"></i>
-                <span>Apps</span>
-            </div>
-            <div class="nav-item" onclick="unlockVIPPrompt()">
-                <i class="fa-solid fa-crown"></i>
-                <span>Premium</span>
-            </div>
-            <div class="nav-item" onclick="toggleSidebar()">
-                <i class="fa-solid fa-user"></i>
-                <span>Profile</span>
-            </div>
+            <div class="nav-item active" onclick="filterByCategory('All', this)"><i class="fa-solid fa-house"></i><span>Home</span></div>
+            <div class="nav-item" onclick="filterByCategory('Game', this)"><i class="fa-solid fa-gamepad"></i><span>Games</span></div>
+            <div class="nav-item" onclick="filterByCategory('App', this)"><i class="fa-solid fa-grid-2"></i><span>Apps</span></div>
+            <div class="nav-item" onclick="unlockVIPPrompt()"><i class="fa-solid fa-crown"></i><span>Premium</span></div>
+            <div class="nav-item" onclick="toggleSidebar()"><i class="fa-solid fa-user"></i><span>Profile</span></div>
         </div>
 
         <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
@@ -733,30 +685,24 @@
                     <div class="side-status">● Online</div>
                 </div>
             </div>
-            <div class="side-item" onclick="window.open('https://wa.me/919024395877')" style="background: linear-gradient(135deg, rgba(255,207,64,0.2), rgba(255,140,0,0.1)); color: #ffcf40; justify-content: center; font-weight: 700;">
-                <i class="fa-solid fa-crown"></i> Upgrade to VIP
-            </div>
+            <div class="side-item" onclick="window.open('https://wa.me/919024395877')" style="background: linear-gradient(135deg, rgba(255,207,64,0.2), rgba(255,140,0,0.1)); color: #ffcf40; justify-content: center; font-weight: 700;"><i class="fa-solid fa-crown"></i> Upgrade to VIP</div>
             <div class="side-divider">Recent Downloads</div>
             <div id="download-history"></div>
             <div class="side-divider">Recent Searches</div>
             <div id="search-history"></div>
             <div class="side-divider">Support</div>
-            <div class="side-item" onclick="window.open('https://t.me/V_Mods_Official')">
-                <i class="fa-brands fa-telegram"></i> Telegram Channel
-            </div>
-            <div class="side-item" onclick="window.open('https://wa.me/919024395877')">
-                <i class="fa-brands fa-whatsapp"></i> Contact Admin
-            </div>
-            <div class="side-item" onclick="logout()" style="color: #ff3b30; margin-top: 15px;">
-                <i class="fa-solid fa-right-from-bracket"></i> Logout
-            </div>
+            <div class="side-item" onclick="window.open('https://t.me/V_Mods_Official')"><i class="fa-brands fa-telegram"></i> Telegram Channel</div>
+            <div class="side-item" onclick="window.open('https://wa.me/919024395877')"><i class="fa-brands fa-whatsapp"></i> Contact Admin</div>
+            <div class="side-item" onclick="logout()" style="color: #ff3b30; margin-top: 15px;"><i class="fa-solid fa-right-from-bracket"></i> Logout</div>
         </div>
 
         <div class="toast" id="toast"></div>
     </div>
 
 <script>
-    // ⚡ NO CACHE - LEVEL 2: Clear Service Worker ⚡
+    // ⚡ LEVEL 1: Meta No-Cache (Head में done) ⚡
+
+    // ⚡ LEVEL 2: Service Worker Clear ⚡
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.getRegistrations().then(function(registrations) {
             for(let registration of registrations) {
@@ -765,7 +711,7 @@
         });
     }
 
-    // ⚡ NO CACHE - LEVEL 3: Clear Cache Storage ⚡
+    // ⚡ LEVEL 3: Cache Storage Clear ⚡
     if ('caches' in window) {
         caches.keys().then(function(names) {
             for (let name of names) {
@@ -774,11 +720,10 @@
         });
     }
 
-    // ⚡ FORCE RELOAD IF CACHED VERSION DETECTED ⚡
+    // ⚡ LEVEL 4: Version Force Reload ⚡
     const STORE_VERSION = "2.0.1";
     const storedVersion = localStorage.getItem('store_version');
     if (storedVersion && storedVersion !== STORE_VERSION) {
-        // Clear everything and force reload
         localStorage.setItem('store_version', STORE_VERSION);
         if (!sessionStorage.getItem('reloaded_' + STORE_VERSION)) {
             sessionStorage.setItem('reloaded_' + STORE_VERSION, 'true');
@@ -797,7 +742,6 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // State
     let isLoginMode = false, currentUser = null, allApps = [], currentCategory = 'All', isVIP = false, vipKey = '', dialogLink = '';
 
     // Audio
@@ -805,29 +749,27 @@
     function playSound(type = 'tap') {
         try {
             if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            const o = audioCtx.createOscillator();
-            const g = audioCtx.createGain();
+            const o = audioCtx.createOscillator(), g = audioCtx.createGain();
             o.connect(g); g.connect(audioCtx.destination);
-            if (type === 'tap') { o.type = 'sine'; o.frequency.setValueAtTime(600, audioCtx.currentTime); o.frequency.exponentialRampToValueAtTime(300, audioCtx.currentTime + 0.06); g.gain.setValueAtTime(0.06, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.06); o.start(); o.stop(audioCtx.currentTime + 0.06); }
-            else if (type === 'success') { o.type = 'sine'; o.frequency.setValueAtTime(500, audioCtx.currentTime); o.frequency.setValueAtTime(800, audioCtx.currentTime + 0.08); o.frequency.setValueAtTime(1100, audioCtx.currentTime + 0.16); g.gain.setValueAtTime(0.08, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.2); o.start(); o.stop(audioCtx.currentTime + 0.2); }
-            else if (type === 'error') { o.type = 'square'; o.frequency.setValueAtTime(180, audioCtx.currentTime); g.gain.setValueAtTime(0.05, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.12); o.start(); o.stop(audioCtx.currentTime + 0.12); }
+            if (type === 'tap') { o.type='sine'; o.frequency.setValueAtTime(600,audioCtx.currentTime); o.frequency.exponentialRampToValueAtTime(300,audioCtx.currentTime+0.06); g.gain.setValueAtTime(0.06,audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+0.06); o.start(); o.stop(audioCtx.currentTime+0.06); }
+            else if (type === 'success') { o.type='sine'; o.frequency.setValueAtTime(500,audioCtx.currentTime); o.frequency.setValueAtTime(800,audioCtx.currentTime+0.08); o.frequency.setValueAtTime(1100,audioCtx.currentTime+0.16); g.gain.setValueAtTime(0.08,audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+0.2); o.start(); o.stop(audioCtx.currentTime+0.2); }
+            else if (type === 'error') { o.type='square'; o.frequency.setValueAtTime(180,audioCtx.currentTime); g.gain.setValueAtTime(0.05,audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+0.12); o.start(); o.stop(audioCtx.currentTime+0.12); }
         } catch(e) {}
     }
 
-    function showToast(msg, type = '') {
-        const t = document.getElementById('toast');
-        t.textContent = msg; t.className = 'toast show ' + type;
-        setTimeout(() => t.className = 'toast', 2500);
+    function showToast(msg, type='') {
+        const t = document.getElementById('toast'); t.textContent=msg; t.className='toast show '+type;
+        setTimeout(()=>t.className='toast',2500);
     }
 
-    // Update Check
+    // Update
     let pendingUpdate = null;
     db.ref('app_settings/store_version').on('value', snap => {
-        if (snap.exists()) {
+        if(snap.exists()) {
             const d = snap.val();
-            if (d.force_update && d.version !== STORE_VERSION) {
+            if(d.force_update && d.version !== STORE_VERSION) {
                 pendingUpdate = d;
-                document.getElementById('up-version').textContent = 'v' + d.version + ' Available!';
+                document.getElementById('up-version').textContent = 'v'+d.version+' Available!';
                 document.getElementById('update-bar').classList.add('show');
                 playSound('success');
             }
@@ -835,195 +777,161 @@
     });
 
     function performUpdate() {
-        if (pendingUpdate && pendingUpdate.update_url) {
+        if(pendingUpdate && pendingUpdate.update_url) {
             playSound('tap');
-            // ⚡ Clear all cache before update ⚡
-            localStorage.clear();
-            sessionStorage.clear();
-            if ('caches' in window) {
-                caches.keys().then(names => names.forEach(name => caches.delete(name)));
-            }
-            if (pendingUpdate.update_url.endsWith('.apk')) {
-                window.open(pendingUpdate.update_url, '_blank');
-            } else {
-                // Add cache-busting parameter
-                const url = pendingUpdate.update_url + '?v=' + pendingUpdate.version + '&t=' + Date.now();
-                window.location.href = url;
-            }
+            localStorage.clear(); sessionStorage.clear();
+            if('caches' in window) caches.keys().then(n=>n.forEach(x=>caches.delete(x)));
+            const url = pendingUpdate.update_url + '?v='+pendingUpdate.version+'&t='+Date.now();
+            if(pendingUpdate.update_url.endsWith('.apk')) window.open(url,'_blank');
+            else window.location.href = url;
             db.ref('app_settings/store_version/force_update').set(false);
-            document.getElementById('update-bar').classList.remove('show');
         }
     }
 
     // VIP & Dialog
-    db.ref('app_settings/vip_key').on('value', s => vipKey = s.val() || '');
-    db.ref('app_settings/dialog').on('value', s => {
-        if (s.exists() && s.val().status === 'on') {
-            const d = s.val();
-            document.getElementById('dgTitle').textContent = d.title || 'NOTICE';
-            document.getElementById('dgMsg').textContent = d.message || '';
-            dialogLink = d.link || '';
-            document.getElementById('dialog-overlay').style.display = 'flex';
+    db.ref('app_settings/vip_key').on('value',s=>vipKey=s.val()||'');
+    db.ref('app_settings/dialog').on('value',s=>{
+        if(s.exists()&&s.val().status==='on') {
+            const d=s.val(); document.getElementById('dgTitle').textContent=d.title||'NOTICE';
+            document.getElementById('dgMsg').textContent=d.message||''; dialogLink=d.link||'';
+            document.getElementById('dialog-overlay').style.display='flex';
         }
     });
+    function closeDialog(){document.getElementById('dialog-overlay').style.display='none';}
+    function openDialogLink(){if(dialogLink)window.open(dialogLink,'_blank');closeDialog();}
 
-    function closeDialog() { document.getElementById('dialog-overlay').style.display = 'none'; }
-    function openDialogLink() { if (dialogLink) window.open(dialogLink, '_blank'); closeDialog(); }
-
-    function loadApps() {
-        db.ref('apps/').on('value', snap => {
-            allApps = [];
-            if (snap.exists()) snap.forEach(c => { const a = c.val(); allApps.push({ id: c.key, ...a }); });
+    // Apps
+    function loadApps(){
+        db.ref('apps/').on('value',snap=>{
+            allApps=[]; if(snap.exists())snap.forEach(c=>{const a=c.val();allApps.push({id:c.key,...a});});
             renderAll();
         });
     }
+    function renderAll(){renderFeatured();renderAppList();}
 
-    function renderAll() {
-        renderFeatured();
-        renderAppList();
+    function renderFeatured(){
+        const c=document.getElementById('featured-scroll');
+        const f=allApps.filter(a=>a.featured||a.category==='VIP'||(a.downloads>5));
+        if(!f.length){c.innerHTML='';return;}
+        c.innerHTML=f.slice(0,10).map(a=>`
+            <div class="featured-card" onclick="trackDownload('${a.name.replace(/'/g,"\\'")}','${a.link.replace(/'/g,"\\'")}')">
+                <span class="feat-badge">${a.category||'HOT'}</span>
+                <span class="feat-icon">${a.category==='Game'?'🎮':a.category==='VIP'?'👑':a.category==='Tool'?'🔧':'📱'}</span>
+                <div><div class="feat-name">${a.name}</div><div class="feat-desc">${a.desc||'Download now!'}</div></div>
+            </div>`).join('');
     }
 
-    function renderFeatured() {
-        const container = document.getElementById('featured-scroll');
-        const featured = allApps.filter(a => a.featured || a.category === 'VIP' || (a.downloads > 5));
-        if (featured.length === 0) { container.innerHTML = ''; return; }
-        container.innerHTML = featured.slice(0, 10).map(a => `
-            <div class="featured-card" onclick="trackDownload('${a.name.replace(/'/g, "\\'")}', '${a.link.replace(/'/g, "\\'")}')">
-                <span class="feat-badge">${a.category || 'HOT'}</span>
-                <span class="feat-icon">${a.category === 'Game' ? '🎮' : a.category === 'VIP' ? '👑' : a.category === 'Tool' ? '🔧' : '📱'}</span>
-                <div>
-                    <div class="feat-name">${a.name}</div>
-                    <div class="feat-desc">${a.desc || 'Download now!'}</div>
-                </div>
-            </div>
-        `).join('');
-    }
-
-    function renderAppList() {
-        const container = document.getElementById('app-list');
-        let filtered = allApps;
-        if (currentCategory === 'VIP' && !isVIP) { container.innerHTML = '<div class="empty-state"><i class="fa-solid fa-lock"></i><p>Unlock VIP to see premium apps</p></div>'; return; }
-        if (currentCategory !== 'All' && currentCategory !== 'VIP') filtered = filtered.filter(a => a.category === currentCategory);
-        if (currentCategory === 'VIP') filtered = filtered.filter(a => a.category === 'VIP');
-        
-        const search = document.getElementById('searchInput')?.value?.toLowerCase() || '';
-        if (search) filtered = filtered.filter(a => a.name.toLowerCase().includes(search));
-
-        document.getElementById('list-title').textContent = currentCategory === 'All' ? '📋 All Apps' : `📋 ${currentCategory}`;
-        if (filtered.length === 0) { container.innerHTML = '<div class="empty-state"><i class="fa-solid fa-box-open"></i><p>No apps found</p></div>'; return; }
-        container.innerHTML = filtered.map(a => {
-            const isV = a.category === 'VIP';
-            return `
-            <div class="app-card ${isV ? 'vip-card' : ''}" onclick="trackDownload('${a.name.replace(/'/g, "\\'")}', '${a.link.replace(/'/g, "\\'")}')">
-                <img class="app-icon" src="${a.icon || 'https://cdn-icons-png.flaticon.com/512/2585/2585151.png'}" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2585/2585151.png'" alt="${a.name}">
-                <div class="app-info">
-                    <div class="app-name">${a.name} ${isV ? '👑' : ''}</div>
-                    <div class="app-meta">
-                        <span>${a.category || 'App'}</span>
-                        <span class="star-rating">★★★★★</span>
-                        <span>📥 ${a.downloads || 0}</span>
-                    </div>
-                </div>
-                <button class="download-btn ${isV ? 'vip-btn' : ''}" onclick="event.stopPropagation(); trackDownload('${a.name.replace(/'/g, "\\'")}', '${a.link.replace(/'/g, "\\'")}')">GET</button>
-            </div>`;
+    function renderAppList(){
+        const container=document.getElementById('app-list');
+        let filtered=allApps;
+        if(currentCategory==='VIP'&&!isVIP){container.innerHTML='<div class="empty-state"><i class="fa-solid fa-lock"></i><p>Unlock VIP to see premium apps</p></div>';return;}
+        if(currentCategory!=='All'&&currentCategory!=='VIP')filtered=filtered.filter(a=>a.category===currentCategory);
+        if(currentCategory==='VIP')filtered=filtered.filter(a=>a.category==='VIP');
+        const search=(document.getElementById('searchInput')?.value||'').toLowerCase();
+        if(search)filtered=filtered.filter(a=>a.name.toLowerCase().includes(search));
+        document.getElementById('list-title').textContent=currentCategory==='All'?'📋 All Apps':'📋 '+currentCategory;
+        if(!filtered.length){container.innerHTML='<div class="empty-state"><i class="fa-solid fa-box-open"></i><p>No apps found</p></div>';return;}
+        container.innerHTML=filtered.map(a=>{
+            const isV=a.category==='VIP';
+            return `<div class="app-card ${isV?'vip-card':''}" onclick="trackDownload('${a.name.replace(/'/g,"\\'")}','${a.link.replace(/'/g,"\\'")}')">
+                <img class="app-icon" src="${a.icon||'https://cdn-icons-png.flaticon.com/512/2585/2585151.png'}" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2585/2585151.png'" alt="${a.name}">
+                <div class="app-info"><div class="app-name">${a.name} ${isV?'👑':''}</div><div class="app-meta"><span>${a.category||'App'}</span><span class="star-rating">★★★★★</span><span>📥 ${a.downloads||0}</span></div></div>
+                <button class="download-btn ${isV?'vip-btn':''}" onclick="event.stopPropagation();trackDownload('${a.name.replace(/'/g,"\\'")}','${a.link.replace(/'/g,"\\'")}')">GET</button></div>`;
         }).join('');
     }
 
-    function trackDownload(name, link) {
+    function trackDownload(name,link){
         playSound('tap');
-        if (currentUser) {
-            db.ref('users/' + currentUser + '/history/downloads').push({ app: name, time: Date.now() });
-            const app = allApps.find(a => a.name === name);
-            if (app) db.ref('apps/' + app.id + '/downloads').transaction(c => (c || 0) + 1);
+        if(currentUser){
+            db.ref('users/'+currentUser+'/history/downloads').push({app:name,time:Date.now()});
+            const app=allApps.find(a=>a.name===name);
+            if(app)db.ref('apps/'+app.id+'/downloads').transaction(c=>(c||0)+1);
         }
-        const a = document.createElement('a'); a.href = link; a.setAttribute('target', '_blank'); a.click(); a.remove();
+        const a=document.createElement('a');a.href=link;a.setAttribute('target','_blank');a.click();a.remove();
     }
 
-    function handleSearch() { renderAppList(); }
+    function handleSearch(){renderAppList();}
 
-    function filterByCategory(cat, el) {
-        playSound('tap');
-        currentCategory = cat;
-        document.querySelectorAll('.cat-card').forEach(c => c.classList.remove('active'));
-        if (el) el.classList.add('active');
-        if (cat === 'VIP' && !isVIP) { unlockVIPPrompt(); return; }
+    function filterByCategory(cat,el){
+        playSound('tap');currentCategory=cat;
+        document.querySelectorAll('.cat-card').forEach(c=>c.classList.remove('active'));
+        if(el)el.classList.add('active');
+        if(cat==='VIP'&&!isVIP){unlockVIPPrompt();return;}
         renderAppList();
     }
 
-    function unlockVIPPrompt() {
-        if (isVIP) { currentCategory = 'VIP'; renderAppList(); return; }
-        const key = prompt('🔑 Enter VIP Key:');
-        if (key === vipKey && vipKey) { isVIP = true; playSound('success'); showToast('✅ Premium Unlocked!', 'success'); currentCategory = 'VIP'; renderAppList(); }
-        else if (key) { playSound('error'); showToast('❌ Invalid Key!', 'error'); }
+    function unlockVIPPrompt(){
+        if(isVIP){currentCategory='VIP';renderAppList();return;}
+        const key=prompt('🔑 Enter VIP Key:');
+        if(key===vipKey&&vipKey){isVIP=true;playSound('success');showToast('✅ Premium Unlocked!','success');currentCategory='VIP';renderAppList();}
+        else if(key){playSound('error');showToast('❌ Invalid Key!','error');}
     }
 
-    function toggleAuthMode() { isLoginMode = !isLoginMode; const t = document.getElementById('auth-toggle'); t.textContent = isLoginMode ? "Don't have an account? Register" : "Already have an account? Sign In"; }
-    
-    function handleAuth() {
-        const u = document.getElementById('u_name').value.trim().toLowerCase();
-        const p = document.getElementById('u_pass').value.trim();
-        if (!u || !p) { playSound('error'); return; }
+    function toggleAuthMode(){isLoginMode=!isLoginMode;document.getElementById('auth-toggle').textContent=isLoginMode?"Don't have an account? Register":"Already have an account? Sign In";}
+
+    function handleAuth(){
+        const u=document.getElementById('u_name').value.trim().toLowerCase();
+        const p=document.getElementById('u_pass').value.trim();
+        if(!u||!p){playSound('error');return;}
         playSound('tap');
-        db.ref('users/' + u).once('value', s => {
-            if (isLoginMode) {
-                if (s.exists() && s.val().password === p) { playSound('success'); proceed(u); }
-                else { playSound('error'); showToast('Wrong credentials!', 'error'); }
-            } else {
-                if (s.exists()) { playSound('error'); showToast('Username exists!', 'error'); }
-                else db.ref('users/' + u).set({ password: p }).then(() => { playSound('success'); proceed(u); });
+        db.ref('users/'+u).once('value',s=>{
+            if(isLoginMode){
+                if(s.exists()&&s.val().password===p){playSound('success');proceed(u);}
+                else{playSound('error');showToast('Wrong credentials!','error');}
+            }else{
+                if(s.exists()){playSound('error');showToast('Username exists!','error');}
+                else db.ref('users/'+u).set({password:p}).then(()=>{playSound('success');proceed(u);});
             }
         });
     }
 
-    function proceed(u) {
-        currentUser = u; localStorage.setItem('v_user', u);
-        document.getElementById('auth-screen').style.display = 'none';
-        document.getElementById('app-ui').style.display = 'block';
-        document.getElementById('display-user').textContent = u;
-        document.getElementById('side-avatar').textContent = u[0].toUpperCase();
-        loadApps(); syncHistory();
+    function proceed(u){
+        currentUser=u;localStorage.setItem('v_user',u);
+        document.getElementById('auth-screen').style.display='none';
+        document.getElementById('app-ui').style.display='block';
+        document.getElementById('display-user').textContent=u;
+        document.getElementById('side-avatar').textContent=u[0].toUpperCase();
+        loadApps();syncHistory();
     }
 
-    function syncHistory() {
-        if (!currentUser) return;
-        db.ref('users/' + currentUser + '/history/downloads').limitToLast(5).on('value', s => {
-            const box = document.getElementById('download-history'); box.innerHTML = '';
-            const items = []; s.forEach(c => items.push(c.val())); items.reverse().forEach(i => box.innerHTML += `<div class="hist-item">📥 ${typeof i === 'string' ? i : i.app || i}</div>`);
+    function syncHistory(){
+        if(!currentUser)return;
+        db.ref('users/'+currentUser+'/history/downloads').limitToLast(5).on('value',s=>{
+            const box=document.getElementById('download-history');box.innerHTML='';
+            const items=[];s.forEach(c=>items.push(c.val()));items.reverse().forEach(i=>box.innerHTML+=`<div class="hist-item">📥 ${typeof i==='string'?i:i.app||i}</div>`);
         });
-        db.ref('users/' + currentUser + '/history/searches').limitToLast(5).on('value', s => {
-            const box = document.getElementById('search-history'); box.innerHTML = '';
-            const items = []; s.forEach(c => items.push(c.val())); items.reverse().forEach(i => box.innerHTML += `<div class="hist-item">🔍 ${i}</div>`);
+        db.ref('users/'+currentUser+'/history/searches').limitToLast(5).on('value',s=>{
+            const box=document.getElementById('search-history');box.innerHTML='';
+            const items=[];s.forEach(c=>items.push(c.val()));items.reverse().forEach(i=>box.innerHTML+=`<div class="hist-item">🔍 ${i}</div>`);
         });
     }
 
-    function toggleSidebar() {
+    function toggleSidebar(){
         playSound('tap');
-        const s = document.getElementById('sidebar'), o = document.getElementById('sidebar-overlay');
-        const open = s.classList.contains('open');
-        s.classList.toggle('open', !open);
-        o.style.display = open ? 'none' : 'block';
+        const s=document.getElementById('sidebar'),o=document.getElementById('sidebar-overlay');
+        const open=s.classList.contains('open');
+        s.classList.toggle('open',!open);
+        o.style.display=open?'none':'block';
     }
 
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter' && document.activeElement === document.getElementById('searchInput')) {
-            const q = document.getElementById('searchInput').value.trim();
-            if (q && currentUser) db.ref('users/' + currentUser + '/history/searches').push(q);
+    document.addEventListener('keydown',function(e){
+        if(e.key==='Enter'&&document.activeElement===document.getElementById('searchInput')){
+            const q=document.getElementById('searchInput').value.trim();
+            if(q&&currentUser)db.ref('users/'+currentUser+'/history/searches').push(q);
         }
     });
 
-    function logout() {
-        localStorage.removeItem('v_user');
-        sessionStorage.clear();
-        if ('caches' in window) {
-            caches.keys().then(names => names.forEach(name => caches.delete(name)));
-        }
+    function logout(){
+        localStorage.clear();sessionStorage.clear();
+        if('caches' in window)caches.keys().then(n=>n.forEach(x=>caches.delete(x)));
         location.reload(true);
     }
 
-    const saved = localStorage.getItem('v_user');
-    if (saved) {
-        db.ref('users/' + saved).once('value', s => {
-            if (s.exists()) proceed(saved);
+    // Auto login
+    const saved=localStorage.getItem('v_user');
+    if(saved){
+        db.ref('users/'+saved).once('value',s=>{
+            if(s.exists())proceed(saved);
             else localStorage.removeItem('v_user');
         });
     }
