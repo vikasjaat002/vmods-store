@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>V-Coding Pro | Dev VikaS</title>
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@300;400;600&display=swap');
+        
+        :root { 
+            --vip: #ffffff; 
+            --gold: #ffcf40; 
+            --dark: #000; 
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.15);
+        }
+        
+        body, html { margin: 0; padding: 0; height: 100%; background: var(--dark); color: #fff; font-family: 'Poppins', sans-serif; overflow: hidden; }
+
+        .glass-text-box {
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 8px 15px;
+            display: inline-block;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        #force-update-lock {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.95);
+            z-index: 20000; display: none; flex-direction: column;
+            align-items: center; justify-content: center; text-align: center; padding: 30px;
+        }
+
+        .clickable:active { transform: scale(0.95); opacity: 0.8; }
+
+        #sidebar { position: fixed; left: -300px; top: 0; width: 280px; height: 100%; background: rgba(10, 10, 10, 0.98); backdrop-filter: blur(30px); z-index: 3000; transition: 0.4s; border-right: 1px solid var(--glass-border); padding: 50px 25px; box-sizing: border-box; }
+        #sidebar.open { left: 0; }
+        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 2500; display: none; }
+        .overlay.active { display: block; }
+
+        .side-link { 
+            padding: 15px; border-radius: 15px; margin-bottom: 12px; display: flex; align-items: center; gap: 15px; 
+            background: var(--glass-bg); border: 1px solid var(--glass-border); color: #fff; text-decoration: none;
+        }
+
+        .header { height: 75px; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; background: rgba(0,0,0,0.9); border-bottom: 1px solid var(--glass-border); z-index: 1000; }
+
+        .vip-btn { 
+            background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 16px; border-radius: 20px; 
+            color: #fff; font-family: 'Orbitron'; font-weight: bold; width: 100%; cursor: pointer;
+        }
+
+        .screen { position: fixed; inset: 0; display: none; flex-direction: column; z-index: 100; background: var(--dark); }
+        .active-screen { display: flex !important; }
+
+        .project-card { 
+            display: flex; align-items: center; gap: 15px; margin-bottom: 15px; 
+            background: var(--glass-bg); border: 1px solid var(--glass-border); 
+            padding: 15px; border-radius: 20px; backdrop-filter: blur(10px);
+        }
+        .p-img { width: 50px; height: 50px; border-radius: 12px; border: 1px solid var(--glass-border); }
+
+        /* --- Updated Layout: Preview 75%, Editor 25% --- */
+        #preview-box { height: 75%; background: #fff; position: relative; border-bottom: 1px solid var(--glass-border); }
+        #code-box { height: 25%; background: #050505; display: flex; flex-direction: column; }
+        textarea { flex: 1; background: transparent; color: #00ff00; border: none; padding: 15px; font-family: monospace; outline: none; resize: none; font-size: 13px; }
+
+        #intro-screen { position: fixed; inset: 0; background: #000; z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        #build-loader { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 5000; flex-direction: column; align-items: center; justify-content: center; }
+
+        /* Header Buttons */
+        .head-btn { background: var(--glass-bg); border: 1px solid var(--glass-border); color: #fff; padding: 6px 12px; border-radius: 8px; font-size: 10px; font-weight: bold; font-family: 'Orbitron'; }
+    </style>
+</head>
+<body>
+
+    <div id="force-update-lock">
+        <div class="project-card" style="flex-direction: column; width: 85%; padding: 30px; border: 1px solid var(--gold);">
+            <i class="fa fa-cloud-arrow-down" style="font-size: 50px; color: var(--gold); margin-bottom: 20px;"></i>
+            <div class="glass-text-box" style="margin-bottom: 20px;"><h2 style="font-family:'Orbitron'; color:var(--gold); margin:0; font-size: 14px;">UPDATE REQUIRED</h2></div>
+            <p id="lock-msg" style="color:#ccc; font-size:12px; margin-bottom:25px;">New version available. Please update to continue coding.</p>
+            <button class="vip-btn clickable" id="lock-btn" style="border-color: var(--gold);">UPDATE NOW</button>
+        </div>
+    </div>
+
+    <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+    <div id="intro-screen">
+        <div class="glass-text-box">
+            <h1 style="font-family:'Orbitron'; color:var(--gold); margin:0;">V-CODING</h1>
+        </div>
+        <p style="color:#555; font-size:10px; letter-spacing:5px; margin-top:15px;">BY VIKAS DEV</p>
+    </div>
+
+    <div id="sidebar">
+        <div class="glass-text-box" style="margin-bottom:30px; display:block;">
+            <h2 style="font-family:'Orbitron'; color:var(--gold); margin:0;">V-PRO MENU</h2>
+        </div>
+        <div class="side-link clickable" onclick="showScreen('dash-screen')"><i class="fa fa-home"></i> Dashboard</div>
+        <div class="side-link clickable" onclick="window.open('https://t.me/V_Mods_Official')"><i class="fa-brands fa-telegram"></i> Telegram</div>
+        <div class="side-link clickable" style="margin-top:50px; border-color:rgba(255,0,0,0.3);" onclick="logout()"><i class="fa fa-power-off"></i> Logout</div>
+    </div>
+
+    <div id="auth-screen" class="screen">
+        <div style="margin: auto; width: 85%;" class="project-card">
+            <div style="width:100%;">
+                <div class="glass-text-box" style="display:block; text-align:center; margin-bottom:20px;">
+                    <h2 style="font-family:'Orbitron'; color:var(--gold); margin:0;">ACCESS SYSTEM</h2>
+                </div>
+                <input type="number" id="ph" placeholder="Phone Number" style="width:100%; padding:15px; margin-bottom:10px; border-radius:15px; background:#000; color:#fff; border:1px solid var(--glass-border); outline:none;">
+                <input type="password" id="ps" placeholder="Password" style="width:100%; padding:15px; margin-bottom:20px; border-radius:15px; background:#000; color:#fff; border:1px solid var(--glass-border); outline:none;">
+                <button class="vip-btn clickable" onclick="auth()">START CODING</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="dash-screen" class="screen">
+        <div class="header">
+            <i class="fa fa-bars-staggered clickable" onclick="toggleSidebar()" style="font-size:24px; color:var(--gold);"></i>
+            <div class="glass-text-box"><span style="font-family:'Orbitron'; font-size:12px;">DASHBOARD</span></div>
+            <div class="clickable" onclick="alert('User: '+user)" style="width:38px; height:38px; border-radius:50%; background:var(--glass-bg); border:1px solid var(--glass-border); display:flex; align-items:center; justify-content:center;"><i class="fa fa-user"></i></div>
+        </div>
+        <div style="padding: 20px; overflow-y:auto; flex:1;">
+            <button class="vip-btn clickable" style="margin-bottom:25px;" onclick="openModal()">+ CREATE NEW PROJECT</button>
+            <div id="plist"></div>
+        </div>
+    </div>
+
+    <div id="edit-screen" class="screen">
+        <div class="header">
+            <i class="fa fa-arrow-left clickable" onclick="showScreen('dash-screen')" style="font-size:18px;"></i>
+            <div style="display:flex; gap:5px;">
+                <button class="head-btn clickable" onclick="pasteCode()" style="color:#00ff00;">PASTE</button>
+                <button class="head-btn clickable" onclick="copyCode()" style="color:var(--gold);">COPY</button>
+                <button class="head-btn clickable" onclick="apiBuildAPK()" style="color:#fff; border-color:#fff;">BUILD</button>
+            </div>
+        </div>
+        <div id="preview-box"><iframe id="res" style="width:100%; height:100%; border:none;"></iframe></div>
+        <div id="code-box"><textarea id="editor" oninput="run()" placeholder="Start coding..."></textarea></div>
+    </div>
+
+    <div id="build-loader">
+        <div class="glass-text-box"><h3 style="font-family:'Orbitron'; color:var(--gold); margin:0;">BUILDING APK...</h3></div>
+    </div>
+
+    <div id="modal" style="position:fixed; inset:0; background:rgba(0,0,0,0.95); z-index:4000; display:none; align-items:center; justify-content:center;">
+        <div class="project-card" style="width:85%; flex-direction:column; text-align:center;">
+            <h3 style="font-family:'Orbitron'; color:var(--gold);">NEW APP</h3>
+            <input type="text" id="new-name" placeholder="App Name" style="width:100%; padding:15px; margin-bottom:20px; background:#000; color:#fff; border:1px solid var(--glass-border); border-radius:15px; outline:none;">
+            <div style="display:flex; gap:10px; width:100%;">
+                <button class="vip-btn clickable" style="background:rgba(255,0,0,0.1);" onclick="closeModal()">CANCEL</button>
+                <button class="vip-btn clickable" onclick="create()">CREATE</button>
+            </div>
+        </div>
+    </div>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyCnfn2Jz2bMgpqdAORvDwGq",
+        databaseURL: "https://v-coding-default-rtdb.firebaseio.com",
+        projectId: "v-coding",
+        appId: "1:885899005413:web:7f4e594c5db3795647330c"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    let user = localStorage.getItem('v_user'), curId = null;
+
+    window.onload = () => {
+        setTimeout(() => {
+            document.getElementById('intro-screen').style.display = 'none';
+            if(user) init(user); else showScreen('auth-screen');
+        }, 2000);
+    };
+
+    function toggleSidebar() {
+        document.getElementById('sidebar').classList.toggle('open');
+        document.getElementById('overlay').classList.toggle('active');
+    }
+
+    function showScreen(id) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active-screen'));
+        document.getElementById(id).classList.add('active-screen');
+        document.getElementById('sidebar').classList.remove('open');
+        document.getElementById('overlay').classList.remove('active');
+    }
+
+    function auth() {
+        let p = document.getElementById('ph').value;
+        if(p.length < 10) return alert("Valid Phone Required");
+        localStorage.setItem('v_user', p); init(p);
+    }
+
+    function init(p) { 
+        user = p; 
+        showScreen('dash-screen'); 
+        db.ref('app_settings/live_update').on('value', snap => {
+            const d = snap.val();
+            const lock = document.getElementById('force-update-lock');
+            if(d && d.isLocked === true) {
+                lock.style.display = 'flex';
+                document.getElementById('lock-msg').innerText = d.message || "New Update Available!";
+                document.getElementById('lock-btn').onclick = () => window.open(d.url);
+            } else { lock.style.display = 'none'; }
+        });
+        load(); 
+    }
+
+    function load() {
+        db.ref('v_users/'+user+'/projects').on('value', snap => {
+            let h = "";
+            snap.forEach(c => {
+                let p = c.val();
+                h += `<div class="project-card clickable" onclick="edit('${c.key}','${p.name}')">
+                    <img src="https://cdn-icons-png.flaticon.com/512/2585/2585151.png" class="p-img">
+                    <div style="flex:1">
+                        <div class="glass-text-box" style="padding:2px 10px; border-radius:8px;"><h4 style="margin:0; font-size:12px; color:var(--gold);">${p.name}</h4></div>
+                    </div>
+                    <i class="fa fa-trash" style="color:#ff4444;" onclick="event.stopPropagation(); del('${c.key}')"></i>
+                </div>`;
+            });
+            document.getElementById('plist').innerHTML = h || "<p style='color:#333; text-align:center;'>No projects yet.</p>";
+        });
+    }
+
+    function create() {
+        let n = document.getElementById('new-name').value;
+        if(!n) return;
+        let ref = db.ref('v_users/'+user+'/projects').push();
+        ref.set({name: n, code: "", date: new Date().toLocaleDateString()}).then(() => { closeModal(); edit(ref.key, n); });
+    }
+
+    function edit(id, n) {
+        curId = id; showScreen('edit-screen');
+        db.ref('v_users/'+user+'/projects/'+id+'/code').once('value', s => { 
+            document.getElementById('editor').value = s.val() || ""; run(); 
+        });
+    }
+
+    function run() {
+        let c = document.getElementById('editor').value;
+        let f = document.getElementById('res').contentWindow.document;
+        f.open(); f.write(c); f.close();
+        if(curId) db.ref('v_users/'+user+'/projects/'+curId+'/code').set(c);
+    }
+
+    async function pasteCode() {
+        try {
+            const text = await navigator.clipboard.readText();
+            document.getElementById('editor').value += text;
+            run();
+        } catch (err) { alert("Clipboard permission required!"); }
+    }
+
+    function copyCode() {
+        const area = document.getElementById('editor');
+        area.select();
+        document.execCommand('copy');
+        alert("Code Copied!");
+    }
+
+    function apiBuildAPK() {
+        const loader = document.getElementById('build-loader');
+        loader.style.display = 'flex';
+        setTimeout(() => { loader.style.display = 'none'; alert("API BUILD SUCCESS!"); }, 2000);
+    }
+
+    function del(id) { if(confirm("Delete?")) db.ref('v_users/'+user+'/projects/'+id).remove(); }
+    function openModal() { document.getElementById('modal').style.display='flex'; }
+    function closeModal() { document.getElementById('modal').style.display='none'; }
+    function logout() { localStorage.clear(); location.reload(); }
+</script>
+</body>
+</html>
