@@ -3,9 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
+    
+    <!-- ⚡ NO CACHE - LEVEL 1 ⚡ -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    
     <meta name="theme-color" content="#000000">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -59,7 +62,6 @@
             letter-spacing: -0.02em;
         }
 
-        /* Scrollbar */
         ::-webkit-scrollbar { width: 0; }
         
         /* ===== ANIMATED BG ===== */
@@ -73,7 +75,6 @@
             z-index: 0;
         }
 
-        /* ===== MAIN CONTAINER ===== */
         #main-container {
             flex: 1;
             overflow-y: auto;
@@ -173,7 +174,6 @@
             cursor: pointer;
             transition: color 0.2s;
         }
-        .auth-toggle:hover { color: #888; }
 
         /* ===== HEADER ===== */
         .header {
@@ -213,18 +213,7 @@
             transition: all 0.2s;
         }
         .header-icons i:active { opacity: 0.5; transform: scale(0.9); }
-        .badge-dot {
-            position: absolute;
-            top: -2px;
-            right: -4px;
-            width: 8px;
-            height: 8px;
-            background: #ff3b30;
-            border-radius: 50%;
-            border: 2px solid #000;
-        }
 
-        /* Search */
         .search-box {
             position: relative;
         }
@@ -254,7 +243,7 @@
             font-size: 14px;
         }
 
-        /* ===== FEATURED SECTION ===== */
+        /* ===== FEATURED ===== */
         .section-title {
             font-family: 'Orbitron', sans-serif;
             font-size: 13px;
@@ -301,21 +290,11 @@
             letter-spacing: 1px;
             text-transform: uppercase;
         }
-        .featured-card .feat-icon {
-            font-size: 36px;
-            margin-bottom: 8px;
-        }
-        .featured-card .feat-name {
-            font-weight: 700;
-            font-size: 16px;
-        }
-        .featured-card .feat-desc {
-            font-size: 11px;
-            color: #aaa;
-            margin-top: 2px;
-        }
+        .featured-card .feat-icon { font-size: 36px; margin-bottom: 8px; }
+        .featured-card .feat-name { font-weight: 700; font-size: 16px; }
+        .featured-card .feat-desc { font-size: 11px; color: #aaa; margin-top: 2px; }
 
-        /* ===== CATEGORIES GRID ===== */
+        /* ===== CATEGORIES ===== */
         .categories-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -336,26 +315,13 @@
             transition: all 0.3s;
         }
         .cat-card:active { transform: scale(0.93); background: rgba(255,255,255,0.08); }
-        .cat-card .cat-icon {
-            font-size: 28px;
-        }
-        .cat-card .cat-label {
-            font-size: 10px;
-            font-weight: 600;
-            color: #aaa;
-            text-align: center;
-            letter-spacing: 0.5px;
-        }
-        .cat-card.active {
-            background: rgba(255,207,64,0.1);
-            border-color: rgba(255,207,64,0.4);
-        }
+        .cat-card .cat-icon { font-size: 28px; }
+        .cat-card .cat-label { font-size: 10px; font-weight: 600; color: #aaa; text-align: center; letter-spacing: 0.5px; }
+        .cat-card.active { background: rgba(255,207,64,0.1); border-color: rgba(255,207,64,0.4); }
         .cat-card.active .cat-label { color: #ffcf40; }
 
         /* ===== APP LIST ===== */
-        .app-list {
-            padding: 0 20px;
-        }
+        .app-list { padding: 0 20px; }
         .app-card {
             background: rgba(255,255,255,0.04);
             backdrop-filter: blur(20px);
@@ -389,11 +355,7 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.4);
         }
         .app-info { flex: 1; min-width: 0; }
-        .app-info .app-name {
-            font-weight: 700;
-            font-size: 14px;
-            margin-bottom: 2px;
-        }
+        .app-info .app-name { font-weight: 700; font-size: 14px; margin-bottom: 2px; }
         .app-info .app-meta {
             display: flex;
             align-items: center;
@@ -401,11 +363,7 @@
             font-size: 11px;
             color: var(--text-secondary);
         }
-        .star-rating {
-            color: #ffcf40;
-            font-size: 10px;
-            letter-spacing: 1px;
-        }
+        .star-rating { color: #ffcf40; font-size: 10px; letter-spacing: 1px; }
         .download-btn {
             background: #007aff;
             border: none;
@@ -419,10 +377,7 @@
             transition: all 0.2s;
             white-space: nowrap;
         }
-        .download-btn:active {
-            transform: scale(0.9);
-            opacity: 0.8;
-        }
+        .download-btn:active { transform: scale(0.9); opacity: 0.8; }
         .download-btn.vip-btn {
             background: linear-gradient(135deg, #ffcf40, #ff8c00);
             color: #000;
@@ -561,22 +516,12 @@
             text-align: center;
             box-shadow: 0 20px 60px rgba(0,0,0,0.8);
         }
-        .dialog-icon {
-            font-size: 44px;
-            margin-bottom: 14px;
-            animation: bounce 0.8s infinite alternate;
-        }
+        .dialog-icon { font-size: 44px; margin-bottom: 14px; animation: bounce 0.8s infinite alternate; }
         @keyframes bounce {
             from { transform: translateY(0); }
             to { transform: translateY(-8px); }
         }
-        .dialog-title {
-            font-family: 'Orbitron', sans-serif;
-            font-weight: 700;
-            font-size: 15px;
-            color: #ffcf40;
-            margin-bottom: 8px;
-        }
+        .dialog-title { font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 15px; color: #ffcf40; margin-bottom: 8px; }
         .dialog-msg { font-size: 12px; color: #aaa; margin-bottom: 20px; line-height: 1.5; }
         .dialog-btn {
             width: 100%;
@@ -590,12 +535,7 @@
             cursor: pointer;
             letter-spacing: 1px;
         }
-        .dialog-close {
-            margin-top: 14px;
-            font-size: 11px;
-            color: #555;
-            cursor: pointer;
-        }
+        .dialog-close { margin-top: 14px; font-size: 11px; color: #555; cursor: pointer; }
 
         /* ===== UPDATE BAR ===== */
         #update-bar {
@@ -719,8 +659,8 @@
             <div class="header-top">
                 <span class="header-logo"><span class="v">V</span><span class="mods">-MODS</span></span>
                 <div class="header-icons">
-                    <i class="fa-solid fa-crown" onclick="unlockVIPPrompt()" style="position:relative;"></i>
-                    <i class="fa-solid fa-bell" onclick="toggleSidebar()" style="position:relative;"></i>
+                    <i class="fa-solid fa-crown" onclick="unlockVIPPrompt()"></i>
+                    <i class="fa-solid fa-bell" onclick="toggleSidebar()"></i>
                 </div>
             </div>
             <div class="search-box">
@@ -729,13 +669,10 @@
             </div>
         </div>
 
-        <!-- Main Container -->
         <div id="main-container">
-            <!-- Featured -->
             <div class="section-title">🔥 Featured</div>
             <div class="featured-scroll" id="featured-scroll"></div>
 
-            <!-- Categories -->
             <div class="section-title">📂 Categories</div>
             <div class="categories-grid">
                 <div class="cat-card active" onclick="filterByCategory('All', this)">
@@ -756,7 +693,6 @@
                 </div>
             </div>
 
-            <!-- App List -->
             <div class="section-title" id="list-title">📋 All Apps</div>
             <div class="app-list" id="app-list">
                 <div class="skeleton"></div>
@@ -765,7 +701,6 @@
             </div>
         </div>
 
-        <!-- Bottom Nav -->
         <div class="bottom-nav">
             <div class="nav-item active" onclick="filterByCategory('All', this)">
                 <i class="fa-solid fa-house"></i>
@@ -789,7 +724,6 @@
             </div>
         </div>
 
-        <!-- Sidebar -->
         <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
         <div id="sidebar">
             <div class="side-profile">
@@ -818,11 +752,42 @@
             </div>
         </div>
 
-        <!-- Toast -->
         <div class="toast" id="toast"></div>
     </div>
 
 <script>
+    // ⚡ NO CACHE - LEVEL 2: Clear Service Worker ⚡
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(function(registrations) {
+            for(let registration of registrations) {
+                registration.unregister();
+            }
+        });
+    }
+
+    // ⚡ NO CACHE - LEVEL 3: Clear Cache Storage ⚡
+    if ('caches' in window) {
+        caches.keys().then(function(names) {
+            for (let name of names) {
+                caches.delete(name);
+            }
+        });
+    }
+
+    // ⚡ FORCE RELOAD IF CACHED VERSION DETECTED ⚡
+    const STORE_VERSION = "2.0.1";
+    const storedVersion = localStorage.getItem('store_version');
+    if (storedVersion && storedVersion !== STORE_VERSION) {
+        // Clear everything and force reload
+        localStorage.setItem('store_version', STORE_VERSION);
+        if (!sessionStorage.getItem('reloaded_' + STORE_VERSION)) {
+            sessionStorage.setItem('reloaded_' + STORE_VERSION, 'true');
+            window.location.reload(true);
+        }
+    } else {
+        localStorage.setItem('store_version', STORE_VERSION);
+    }
+
     // Firebase
     const firebaseConfig = {
         apiKey: "AIzaSyAQ1mRKgvcWjmfcAPAatfekpVdJQ1gUn1g",
@@ -833,10 +798,9 @@
     const db = firebase.database();
 
     // State
-    const STORE_VERSION = "2.0.0";
     let isLoginMode = false, currentUser = null, allApps = [], currentCategory = 'All', isVIP = false, vipKey = '', dialogLink = '';
 
-    // Audio Context for click sounds
+    // Audio
     let audioCtx;
     function playSound(type = 'tap') {
         try {
@@ -850,7 +814,6 @@
         } catch(e) {}
     }
 
-    // Toast
     function showToast(msg, type = '') {
         const t = document.getElementById('toast');
         t.textContent = msg; t.className = 'toast show ' + type;
@@ -874,8 +837,19 @@
     function performUpdate() {
         if (pendingUpdate && pendingUpdate.update_url) {
             playSound('tap');
-            if (pendingUpdate.update_url.endsWith('.apk')) window.open(pendingUpdate.update_url, '_blank');
-            else window.location.href = pendingUpdate.update_url;
+            // ⚡ Clear all cache before update ⚡
+            localStorage.clear();
+            sessionStorage.clear();
+            if ('caches' in window) {
+                caches.keys().then(names => names.forEach(name => caches.delete(name)));
+            }
+            if (pendingUpdate.update_url.endsWith('.apk')) {
+                window.open(pendingUpdate.update_url, '_blank');
+            } else {
+                // Add cache-busting parameter
+                const url = pendingUpdate.update_url + '?v=' + pendingUpdate.version + '&t=' + Date.now();
+                window.location.href = url;
+            }
             db.ref('app_settings/store_version/force_update').set(false);
             document.getElementById('update-bar').classList.remove('show');
         }
@@ -896,7 +870,6 @@
     function closeDialog() { document.getElementById('dialog-overlay').style.display = 'none'; }
     function openDialogLink() { if (dialogLink) window.open(dialogLink, '_blank'); closeDialog(); }
 
-    // Load Apps
     function loadApps() {
         db.ref('apps/').on('value', snap => {
             allApps = [];
@@ -984,8 +957,7 @@
         else if (key) { playSound('error'); showToast('❌ Invalid Key!', 'error'); }
     }
 
-    // Auth
-    function toggleAuthMode() { isLoginMode = !isLoginMode; document.getElementById('auth-title')?.remove(); const t = document.getElementById('auth-toggle'); t.textContent = isLoginMode ? "Don't have an account? Register" : "Already have an account? Sign In"; }
+    function toggleAuthMode() { isLoginMode = !isLoginMode; const t = document.getElementById('auth-toggle'); t.textContent = isLoginMode ? "Don't have an account? Register" : "Already have an account? Sign In"; }
     
     function handleAuth() {
         const u = document.getElementById('u_name').value.trim().toLowerCase();
@@ -1012,7 +984,6 @@
         loadApps(); syncHistory();
     }
 
-    // History
     function syncHistory() {
         if (!currentUser) return;
         db.ref('users/' + currentUser + '/history/downloads').limitToLast(5).on('value', s => {
@@ -1025,7 +996,6 @@
         });
     }
 
-    // Sidebar
     function toggleSidebar() {
         playSound('tap');
         const s = document.getElementById('sidebar'), o = document.getElementById('sidebar-overlay');
@@ -1034,7 +1004,6 @@
         o.style.display = open ? 'none' : 'block';
     }
 
-    // Search save
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Enter' && document.activeElement === document.getElementById('searchInput')) {
             const q = document.getElementById('searchInput').value.trim();
@@ -1042,9 +1011,15 @@
         }
     });
 
-    function logout() { localStorage.removeItem('v_user'); location.reload(); }
+    function logout() {
+        localStorage.removeItem('v_user');
+        sessionStorage.clear();
+        if ('caches' in window) {
+            caches.keys().then(names => names.forEach(name => caches.delete(name)));
+        }
+        location.reload(true);
+    }
 
-    // Init
     const saved = localStorage.getItem('v_user');
     if (saved) {
         db.ref('users/' + saved).once('value', s => {
